@@ -18,7 +18,7 @@ struct in_addr {
     unsigned long s_addr;  // load with inet_aton()
 }; */
 
-struct client {
+struct client { // Struct created for passing parameters to the worker function through the thread.
 	int socket;
 	struct sockaddr_in clientAddr;
 };
@@ -60,7 +60,7 @@ int main(){
 		client_data.socket = newsock;
 		client_data.clientAddr = clientAddr;
 		pthread_t thread_id;
-		if(pthread_create(&thread_id, NULL, process, (void*) &client_data) < 0){
+		if(pthread_create(&thread_id, NULL, process, (void*) &client_data) < 0){ // Spawn a worker thread to handle the client request.
 			perror("Error Creating Thread.");
 			return 1;
 		}
@@ -68,7 +68,7 @@ int main(){
 
 }
 
-void *process (void *client_data){
+void *process (void *client_data){ // Worker function to handle the client request.
 	struct client data = *(struct client*)client_data;
 	int newsock = data.socket;
 	struct sockaddr_in clientAddr = data.clientAddr;
