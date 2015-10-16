@@ -5,6 +5,10 @@ BDir = ./build
 Flags = -std=c++11
 Libs = 
 Objects = \
+	$(BDir)/message.o\
+	$(BDir)/client.o\
+	$(BDir)/server.o\
+	$(BDir)/socket.o\
 
 first: build
 
