@@ -1,20 +1,20 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-class message {
+class message{
 	message() = delete;
 	message(const message&) = delete;
 	message(message&&) = delete;
 private:
 	const void *msg;
-	const size_t msg_size;
+	const int msg_size;
 
 public:
-	message(void *, size_t);
+	message(void *, int);
 	~message();
 
 	const void *getMessage() const;
-	size_t getMessageSize() const;
+	int getMessageSize() const;
 };
 
 #endif

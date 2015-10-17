@@ -2,17 +2,17 @@
 #define SERVER_H
 
 #include "message.h"
-#include "socket.h"
+#include "UDPsocket.h"
 
-class server {
+class server{
 	server() = delete;
 	server(const server&) = delete;
 	server(server&&) = delete;
 private:
-	socket *server_socket;
+	UDPsocket server_socket;
 
 public:
-	server(char *, int);
+	server(const char *, int);
 	~server();
 
 	void listen();

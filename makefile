@@ -8,7 +8,7 @@ Objects = \
 	$(BDir)/message.o\
 	$(BDir)/client.o\
 	$(BDir)/server.o\
-	$(BDir)/socket.o\
+	$(BDir)/UDPsocket.o\
 
 first: build
 

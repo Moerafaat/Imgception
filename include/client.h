@@ -2,20 +2,20 @@
 #define CLIENT_H
 
 #include "message.h"
-#include "socket.h"
+#include "UDPsocket.h"
 
-class client {
+class client{
 	client() = delete;
 	client(const client&) = delete;
 	client(client&&) = delete;
 private:
-	socket *client_socket;
+	UDPsocket client_socket;
 
 public:
-	client(char *, int);
+	client(const char *, int);
 	~client();
 
-	message *execute(const message *) const;
+	message *execute(const message *);
 };
 
 #endif
