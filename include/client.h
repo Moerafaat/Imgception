@@ -12,10 +12,10 @@ private:
 	UDPsocket client_socket;
 
 public:
-	client(const char *, int);
+	client(const char *, short);
 	~client();
 
-	message *execute(const message *);
-};
+	message *execute(const message *); // Send an asynchronous message to the server.
+ };
 
 #endif

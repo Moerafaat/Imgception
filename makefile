@@ -3,12 +3,13 @@ SDir = ./src
 IDir = ./include
 BDir = ./build
 Flags = -std=c++11
-Libs = 
+Libs = -pthread
 Objects = \
 	$(BDir)/message.o\
 	$(BDir)/client.o\
 	$(BDir)/server.o\
 	$(BDir)/UDPsocket.o\
+	$(BDir)/worker.o\
 
 first: build
 

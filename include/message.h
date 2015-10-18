@@ -3,14 +3,14 @@
 
 class message{
 	message() = delete;
-	message(const message&) = delete;
-	message(message&&) = delete;
 private:
 	const void *msg;
 	const int msg_size;
 
 public:
 	message(void *, int);
+	message(const message&);
+	message(message&&);
 	~message();
 
 	const void *getMessage() const;
@@ -18,3 +18,5 @@ public:
 };
 
 #endif
+
+// Will be inherited: To use serialization.
