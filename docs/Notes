@@ -1,0 +1,4 @@
+1. Adding support for sendReply.
+2. Adjustments to tracking of threading.
+3. Adjust the server to handle "q" from clients.
+4. Adding de-allocation of structures.
