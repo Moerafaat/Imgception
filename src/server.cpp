@@ -18,6 +18,7 @@ void server::listen(){
 		buffer = server_socket.syncRead(size);
 		message msg(buffer, size);
 		workers.push_back(new worker(&msg, server_socket.clone())); // Spawn a worker in a vector of workers to handle the client.
+		server_socket.asyncWrite(workers.back()->getIPandPort(), 13); // Reply to client.
 		workers.back()->deploy(); // Deploy the thread.
 	}
 }

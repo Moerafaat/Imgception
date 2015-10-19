@@ -10,7 +10,7 @@ char *UDPsocket::resolveHostName(const char* const HostName){ // Resolving the h
 	memcpy(IP, host->h_addr, 4);
 }
 
-UDPsocket::UDPsocket(const short my_port): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){ // Constuct server socket.
+UDPsocket::UDPsocket(const short my_port): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){ // Constuct listener socket.
 	if(sock == -1) throw("Error Creating Socket");
 
 	setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,(void *)1,sizeof(1));
@@ -32,6 +32,9 @@ UDPsocket::UDPsocket(const char * const IP, const short pport, bool cleanIP): si
 	memcpy((char *)&peer_addr.sin_addr.s_addr, IP, 4);
     memset(&(peer_addr.sin_zero), 0, 8);
     if(cleanIP) delete [] IP;
+
+	if (bind(sock, (sockaddr *)&my_addr, sizeof(sockaddr)) == -1) throw("Error Binding"); // Explicit binding for the local socket.
+	if(getsockname(sock, (sockaddr *)&my_addr, &sin_size) == -1) throw("Error Getting Sockname"); // Get own IP and Port.
 }
 
 UDPsocket::~UDPsocket(){
@@ -58,14 +61,14 @@ int UDPsocket::syncWrite(const char *, const int, const int){ // Not yet impleme
 	return 0;
 }
 
-int UDPsocket::asyncWrite(const char * msg, const int size){
+int UDPsocket::asyncWrite(const char *msg, const int size){
 	return sendto(sock, msg, size, 0, (sockaddr *)&peer_addr, sin_size);
 }
 
-short UDPsocket::getMyPort() const{
-	return my_addr.sin_port;
+unsigned short UDPsocket::getMyPort() const{
+	return ntohs(my_addr.sin_port);
 }
 
-short UDPsocket::getPeerPort() const{
-	return peer_addr.sin_port;
+unsigned short UDPsocket::getPeerPort() const{
+	return ntohs(peer_addr.sin_port);
 }

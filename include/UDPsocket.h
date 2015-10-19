@@ -36,8 +36,8 @@ public:
 	int syncWrite(const char *, const int, const int=0);
 	int asyncWrite(const char *, const int);
 
-	short getMyPort() const;
-	short getPeerPort() const;
+	unsigned short getMyPort() const;
+	unsigned short getPeerPort() const;
 };
 
 #endif
