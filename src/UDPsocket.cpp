@@ -3,37 +3,53 @@
 
 using namespace std;
 
-char *UDPsocket::resolveHostName(const char* const HostName){ // Resolving the host name to the IP.
-	char* IP = new char[4 / sizeof(char)];
+unsigned int UDPsocket::resolveHostName(const char* const HostName){ // Resolving the host name to the IP.
 	hostent *host = gethostbyname(HostName);
 	if (host == NULL) throw("Cannot Resolve Host");
-	memcpy(IP, host->h_addr, 4);
+	return ntohl(*(unsigned int *)host->h_addr);
 }
 
-UDPsocket::UDPsocket(const short my_port): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){ // Constuct listener socket.
+UDPsocket::UDPsocket(): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){ // Construct a socket with random.
 	if(sock == -1) throw("Error Creating Socket");
 
+	my_addr.sin_family = AF_INET;
+	my_addr.sin_port = 0;
+    my_addr.sin_addr.s_addr = INADDR_ANY; // Listen from any interface.
+	bzero(&(my_addr.sin_zero), 8);
+
+	peer_addr.sin_family = AF_INET;
+	bzero(&(peer_addr.sin_zero), 8);
+
+	if (bind(sock, (sockaddr *)&my_addr, sizeof(sockaddr)) == -1) throw("Error Binding");
+	if(getsockname(sock, (sockaddr *)&my_addr, &sin_size) == -1) throw("Error Getting Sockname"); // Get own IP and Port.
+}
+
+UDPsocket::UDPsocket(const short my_port): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){ // Constuct a socket with a specific port.
+	if(sock == -1) throw("Error Creating Socket");
 	setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,(void *)1,sizeof(1));
+
     my_addr.sin_family = AF_INET;
     my_addr.sin_port = htons(my_port);
-    my_addr.sin_addr.s_addr = INADDR_ANY; // Listen for any incoming IPs.
+    my_addr.sin_addr.s_addr = INADDR_ANY; // Listen from any interface.
     bzero(&(my_addr.sin_zero), 8);
-    if (bind(sock, (sockaddr *)&my_addr, sizeof(sockaddr)) == -1) throw("Error Binding");
+
+	peer_addr.sin_family = AF_INET;
+	bzero(&(peer_addr.sin_zero), 8);
+
+	if (bind(sock, (sockaddr *)&my_addr, sizeof(sockaddr)) == -1) throw("Error Binding");
 }
 
-UDPsocket::UDPsocket(const char * const IP, const short pport, bool cleanIP): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){
-	// Construct a new socket to communicate with the peer provided in the argument.
+UDPsocket::UDPsocket(const unsigned int IP, const short pport): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){
 	if(sock == -1) throw("Error Creating Socket");
 
-	memset((char *) &peer_addr, 0,sizeof(peer_addr));
+	memset(&my_addr.sin_addr.s_addr, 0, sin_size);
+
     peer_addr.sin_family = AF_INET;
     peer_addr.sin_port = htons(pport);
+	peer_addr.sin_addr.s_addr = htonl(IP);
+	bzero(&(peer_addr.sin_zero), 8);
 
-	memcpy((char *)&peer_addr.sin_addr.s_addr, IP, 4);
-    memset(&(peer_addr.sin_zero), 0, 8);
-    if(cleanIP) delete [] IP;
-
-	if (bind(sock, (sockaddr *)&my_addr, sizeof(sockaddr)) == -1) throw("Error Binding"); // Explicit binding for the local socket.
+	if(bind(sock, (sockaddr *)&my_addr, sizeof(sockaddr)) == -1) throw("Error Binding"); // Explicit binding for the local socket.
 	if(getsockname(sock, (sockaddr *)&my_addr, &sin_size) == -1) throw("Error Getting Sockname"); // Get own IP and Port.
 }
 
@@ -41,28 +57,34 @@ UDPsocket::~UDPsocket(){
 	close(sock);
 }
 
-UDPsocket UDPsocket::clone() const{ // Clone the socket (Used to reserve a different port for each incoming client).
-	return UDPsocket((char *)&peer_addr.sin_addr.s_addr, peer_addr.sin_port);
-}
-
-char *UDPsocket::syncRead(int&, const int){
-	int size_read = recvfrom(sock, buffer, maxBytes, 0, (sockaddr *)&peer_addr, &sin_size);
+char *UDPsocket::syncRead(int& size_read, const int){
+	size_read = recvfrom(sock, buffer, maxBytes, 0, (sockaddr *)&peer_addr, &sin_size);
 
 	char *buf = new char[size_read];
 	memcpy(buf, buffer, size_read);
 	return buf;
 }
 
-char *UDPsocket::asyncRead(int&){ // Not yet implemented.
-	return 0;
-}
-
-int UDPsocket::syncWrite(const char *, const int, const int){ // Not yet implemented.
-	return 0;
-}
-
 int UDPsocket::asyncWrite(const char *msg, const int size){
 	return sendto(sock, msg, size, 0, (sockaddr *)&peer_addr, sin_size);
+}
+
+void UDPsocket::bindPeer(const unsigned int IP, const unsigned short port){
+	peer_addr.sin_family = AF_INET;
+	peer_addr.sin_port = htons(port);
+	peer_addr.sin_addr.s_addr = htonl(IP);
+	bzero(&(peer_addr.sin_zero), 8);
+
+	connect(sock, (sockaddr *)&peer_addr, sin_size);
+}
+
+void UDPsocket::releasePeer(){
+	peer_addr.sin_family = AF_INET;
+	peer_addr.sin_port = 0;
+	peer_addr.sin_addr.s_addr = 0;
+	bzero(&(peer_addr.sin_zero), 8);
+
+	connect(sock, (sockaddr *)&peer_addr, sin_size);
 }
 
 unsigned short UDPsocket::getMyPort() const{
@@ -71,4 +93,12 @@ unsigned short UDPsocket::getMyPort() const{
 
 unsigned short UDPsocket::getPeerPort() const{
 	return ntohs(peer_addr.sin_port);
+}
+
+unsigned int UDPsocket::getMyIP() const{
+	return ntohl(my_addr.sin_addr.s_addr);
+}
+
+unsigned int UDPsocket::getPeerIP() const{
+	return ntohl(peer_addr.sin_addr.s_addr);
 }

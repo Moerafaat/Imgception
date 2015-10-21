@@ -11,10 +11,8 @@
 #include <netdb.h>
 
 class UDPsocket{
-	UDPsocket() = delete;
-public:
-	UDPsocket(const UDPsocket&) = default;
-	UDPsocket(UDPsocket&&) = default;
+	UDPsocket(const UDPsocket&) = delete;
+	UDPsocket(UDPsocket&&) = delete;
 private:
 	static const int maxBytes = 64*1024;
 	int sock;
@@ -24,20 +22,22 @@ private:
 	char buffer[maxBytes];
 
 public:
-	static char *resolveHostName(const char * const);
+	static unsigned int resolveHostName(const char * const);
+	UDPsocket();
 	UDPsocket(const short);
-	UDPsocket(const char * const, const short, bool = false);
+	UDPsocket(const unsigned int, const short);
 	~UDPsocket();
 
-	UDPsocket clone() const;
-
 	char *syncRead(int&, const int=0);
-	char *asyncRead(int&);
-	int syncWrite(const char *, const int, const int=0);
 	int asyncWrite(const char *, const int);
+
+	void bindPeer(const unsigned int, const unsigned short);
+	void releasePeer();
 
 	unsigned short getMyPort() const;
 	unsigned short getPeerPort() const;
+	unsigned int getMyIP() const;
+	unsigned int getPeerIP() const;
 };
 
 #endif

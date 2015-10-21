@@ -5,24 +5,25 @@
 #include "message.h"
 #include "UDPsocket.h"
 
+class server;
+
 class worker{
 	worker() = delete;
 	worker(const worker&) = delete;
 	worker(worker&&) = delete;
 private:
 	static void *process (void *); // Process to be spawned in a thread.
-	message msg;
 	UDPsocket socket;
 	pthread_t thread_id;
-	char ip_port[6];
+	pthread_mutex_t available;
+	unsigned int clientKey;
+	server *Server;
 
 public:
-	worker(message *, UDPsocket);
+	worker(server *);
 	~worker();
 
-	void deploy(); // API that is used to construct the pthread.
-
-	const char *getIPandPort() const; // Return the IP and Port to send to client.
+	void deploy(const unsigned int, const unsigned int, const unsigned short); //API to deploy thread with IP:Port
 };
 
 #endif
