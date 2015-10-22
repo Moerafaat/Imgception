@@ -10,6 +10,8 @@ class client{
 	client(client&&) = delete;
 private:
 	UDPsocket client_socket;
+	unsigned int server_ip;
+	unsigned short server_port;
 
 public:
 	client(const char *, short);

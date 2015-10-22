@@ -32,7 +32,8 @@ public:
 	int asyncWrite(const char *, const int);
 
 	void bindPeer(const unsigned int, const unsigned short);
-	void releasePeer();
+	void releasePeer(const unsigned int=0, const unsigned short=0);
+	void shutdownSocket();
 
 	unsigned short getMyPort() const;
 	unsigned short getPeerPort() const;

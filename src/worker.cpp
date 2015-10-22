@@ -6,16 +6,31 @@ using namespace std;
 
 void *worker::process(void * W){
 	worker *Worker = (worker *)W;
+	char *buf;
 	if(pthread_mutex_lock(&Worker->available)) throw("Unable to lock mutex");
 	do{
 		cout << "Hello from worker to " << Worker->socket.getPeerPort() << " with key: " << Worker->clientKey << endl;
-		Worker->clientKey = -1;
 
+		unsigned int msg = htonl(Worker->clientKey);
+		int size = Worker->socket.asyncWrite((char *)&msg, sizeof(Worker->clientKey));
+
+		while(true){
+			buf = Worker->socket.syncRead(size);
+			//if(*buf == 'q') Worker->Server->cleanExit();
+			cout << size << " " << buf << endl;
+			if(*buf == 'q') break;
+			delete [] buf;
+		}
+		delete [] buf;
+
+		Worker->clientKey = -1;
+		//Worker->socket.releasePeer();.
+		Worker->socket.bindPeer(Worker->socket.getMyIP(), Worker->socket.getMyPort());	//Check if there is a better way.
 		Worker->Server->unlockWorker(Worker);
 		// Do not insert any instructions here to avoid undefined states in 'socket' and 'clientKey'.
 		if(pthread_mutex_lock(&Worker->available)) throw("Unable to lock mutex");
-
 	}while(!Worker->Server->exitStatus());
+	cout << "I am out" << endl;
 }
 
 worker::worker(server* ser) : Server(ser), clientKey(-1){
@@ -25,7 +40,9 @@ worker::worker(server* ser) : Server(ser), clientKey(-1){
 }
 
 worker::~worker(){
+	cout << "destruct 2" << endl;
 	if(pthread_mutex_unlock(&available)) throw("Unable to unlock mutex");
+	cout << "destruct 2" << endl;
 	if(pthread_join(thread_id, nullptr)) throw("Unable to join thread");
 	if(pthread_mutex_destroy(&available)) throw("Unable to destroy mutex");
 }
