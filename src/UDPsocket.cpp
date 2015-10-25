@@ -57,9 +57,9 @@ UDPsocket::~UDPsocket(){
 	close(sock);
 }
 
-char *UDPsocket::syncRead(int& size_read, const int){
+char *UDPsocket::syncRead(int& size_read, const int msTimeOut){
 	size_read = recvfrom(sock, buffer, maxBytes, 0, (sockaddr *)&peer_addr, &sin_size);
-
+	if(size_read == -1) return nullptr;
 	char *buf = new char[size_read];
 	memcpy(buf, buffer, size_read);
 	return buf;
@@ -67,6 +67,13 @@ char *UDPsocket::syncRead(int& size_read, const int){
 
 int UDPsocket::asyncWrite(const char *msg, const int size){
 	return sendto(sock, msg, size, 0, (sockaddr *)&peer_addr, sin_size);
+}
+
+void UDPsocket::setReadTimeout(const unsigned int timeout_ms){
+	timeval tv;
+	tv.tv_sec = timeout_ms / 1000;
+	tv.tv_usec = timeout_ms % 1000 * 1000;
+	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(timeval));
 }
 
 void UDPsocket::bindPeer(const unsigned int IP, const unsigned short port){

@@ -20,7 +20,7 @@ private:
 	sockaddr_in my_addr;
 	sockaddr_in peer_addr;
 	char buffer[maxBytes];
-
+	
 public:
 	static unsigned int resolveHostName(const char * const);
 	UDPsocket();
@@ -30,10 +30,12 @@ public:
 
 	char *syncRead(int&, const int=0);
 	int asyncWrite(const char *, const int);
+	void setReadTimeout(const unsigned int);
 
 	void bindPeer(const unsigned int, const unsigned short);
 	void releasePeer(const unsigned int=0, const unsigned short=0);
 	void shutdownSocket();
+
 
 	unsigned short getMyPort() const;
 	unsigned short getPeerPort() const;

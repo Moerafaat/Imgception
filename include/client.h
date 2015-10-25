@@ -13,14 +13,15 @@ private:
 	unsigned int server_ip;
 	unsigned short server_port;
 	unsigned int my_key;
-
+	unsigned int nTries;
 public:
 	client(const char *, short);
 	~client();
 
 	int connect();
 	void disconnect();
-
+	void setTries(const unsigned int);
+	
 	message *execute(const message *); // Send an asynchronous message to the server.
  };
 

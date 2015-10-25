@@ -5,12 +5,12 @@
 using namespace std;
 
 void *worker::process(void * W){
+	try{
 	worker *Worker = (worker *)W;
 	char *buf;
 	if(pthread_mutex_lock(&Worker->available)) throw("Unable to lock mutex");
 	while(!Worker->Server->exitStatus()){
 		cout << hex << W << " Hello from worker to " << Worker->socket.getPeerPort() << " with key: " << Worker->clientKey << endl;
-
 		unsigned int msg = htonl(Worker->clientKey);
 		int size = Worker->socket.asyncWrite((char *)&msg, sizeof(Worker->clientKey));
 
@@ -32,6 +32,9 @@ void *worker::process(void * W){
 		if(pthread_mutex_lock(&Worker->available)) throw("Unable to lock mutex");
 	}while(!Worker->Server->exitStatus());
 	if(pthread_mutex_unlock(&Worker->available)) throw("Unable to unlock mutex");	//No Idea where is it locked
+	}catch(const char* str){
+		cout << str << endl;
+	}
 }
 
 worker::worker(server* ser) : Server(ser), clientKey(-1){
