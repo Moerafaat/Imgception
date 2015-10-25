@@ -18,46 +18,33 @@ void server::listen(){
 	int size;
 	while(!EXIT_FLAG){ // Continuously listening for incoming client data.
 		buffer = server_socket.syncRead(size);
-		lockWorker()->deploy(ntohl(*(unsigned int*)buffer), server_socket.getPeerIP(), server_socket.getPeerPort());
+		if(buffer[0] == 1)
+			lockWorker()->deploy(ntohl(*(unsigned int*)buffer+1), server_socket.getPeerIP(), server_socket.getPeerPort());
 		delete [] buffer;
 	}
 	cout << "Server is exiting" << endl;
 }
 
 worker* server::lockWorker(){
-	cout << "l+" << freeWorkers.size() << endl;
-	if(pthread_mutex_lock(&workersLockMutex)) throw("Unable to lock mutex");	//we need try lock here
-	cout << "l/" << freeWorkers.size() << endl;
+	if(pthread_mutex_lock(&workersLockMutex)) throw("Unable to lock mutex");	//we need try lock here when managing Queuing (i.e. running out of workers)
 	worker *returnWorker = freeWorkers.back();
 	freeWorkers.pop_back();
 	if(pthread_mutex_unlock(&workersLockMutex)) throw("Unable to unlock mutex");
-	cout << "l-" << freeWorkers.size() << endl;
 	return returnWorker;
 }
 
 void server::unlockWorker(worker* Worker){
-	cout << "u+" << freeWorkers.size() << endl;
 	if(pthread_mutex_lock(&workersLockMutex)) throw("Unable to lock mutex");
 	freeWorkers.push_back(Worker);
 	if(pthread_mutex_unlock(&workersLockMutex)) throw("Unable to unlock mutex");
-	cout << "u-" << freeWorkers.size() << endl;
 }
 
 void server::cleanExit(){
+	if(EXIT_FLAG) return;
+	char flag = 0;
 	EXIT_FLAG = true;
-	try{
-		server_socket.shutdownSocket();
-	}
-	catch(const char* str){
-		cout << str << endl;
-		switch (errno) {
-			case EBADF: cout << "bad sock" << endl;
-			case EINVAL: cout << "invalid HOW" << endl;
-			case ENOTCONN: cout << "not connect" << endl;
-			case ENOTSOCK: cout << "it is a file" << endl;
-		}
-	}
-
+	server_socket.bindPeer(server_socket.getMyIP(), server_socket.getMyPort());
+	int size = server_socket.asyncWrite(&flag, 1);
 }
 
 bool server::exitStatus() const{
