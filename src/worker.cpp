@@ -30,7 +30,7 @@ void *worker::process(void * W){
 		Worker->Server->unlockWorker(Worker);
 		// Do not insert any instructions here to avoid undefined states in 'socket' and 'clientKey'.
 		if(pthread_mutex_lock(&Worker->available)) throw("Unable to lock mutex");
-	}while(!Worker->Server->exitStatus());
+	}
 	if(pthread_mutex_unlock(&Worker->available)) throw("Unable to unlock mutex");	//No Idea where is it locked
 	}catch(const char* str){
 		cout << str << endl;

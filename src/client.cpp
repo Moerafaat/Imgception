@@ -1,10 +1,12 @@
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <iostream>
 #include <string>
 #include "client.h"
 
 using namespace std;
 
-client::client(const char *hostname, short peer_port): client_socket(UDPsocket::resolveHostName(hostname), peer_port){
+client::client(const char *hostname, short peer_port): client_socket(ntohl(inet_addr(hostname)), peer_port){ //client_socket(UDPsocket::resolveHostName(hostname), peer_port){
 	// Resovles the host first, then constructs the client socket.
 	server_ip = client_socket.getPeerIP();
 	server_port = peer_port;

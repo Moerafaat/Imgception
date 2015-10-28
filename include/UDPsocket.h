@@ -20,7 +20,7 @@ private:
 	sockaddr_in my_addr;
 	sockaddr_in peer_addr;
 	char buffer[maxBytes];
-	
+
 public:
 	static unsigned int resolveHostName(const char * const);
 	UDPsocket();

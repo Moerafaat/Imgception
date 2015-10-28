@@ -57,7 +57,7 @@ UDPsocket::~UDPsocket(){
 	close(sock);
 }
 
-char *UDPsocket::syncRead(int& size_read, const int msTimeOut){
+char *UDPsocket::syncRead(int& size_read, const int msTimeOut){ // Need removing 2nd param.
 	size_read = recvfrom(sock, buffer, maxBytes, 0, (sockaddr *)&peer_addr, &sin_size);
 	if(size_read == -1) return nullptr;
 	char *buf = new char[size_read];

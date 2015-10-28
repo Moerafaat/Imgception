@@ -39,7 +39,7 @@ void server::unlockWorker(worker* Worker){
 	if(pthread_mutex_unlock(&workersLockMutex)) throw("Unable to unlock mutex");
 }
 
-void server::cleanExit(){
+void server::cleanExit(){ // Check that the server is the one sending.
 	if(EXIT_FLAG) return;
 	char flag = 0;
 	EXIT_FLAG = true;

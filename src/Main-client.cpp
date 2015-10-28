@@ -6,7 +6,7 @@ using namespace std;
 int main(int argc, char *argv[]){
 	cout << "Hello From Client!" << endl;
 
-	client Client("localhost", 5000); // Construct a client.
+	client Client("10.40.40.185", 5000); // Construct a client.
 	if(Client.connect() == -1){
 		cout << "Unable to connect to server" << endl;
 		return 0;
