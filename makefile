@@ -5,11 +5,10 @@ BDir = ./build
 Flags = -std=c++11
 Libs = -pthread
 Objects = \
-	$(BDir)/message.o\
-	$(BDir)/client.o\
-	$(BDir)/server.o\
+	$(BDir)/Views.o\
 	$(BDir)/UDPsocket.o\
-	$(BDir)/worker.o\
+    $(BDir)/transmittable.o\
+    #$(BDir)/message.o\
 
 first: build
 
