@@ -8,7 +8,7 @@ Objects = \
 	$(BDir)/Views.o\
 	$(BDir)/UDPsocket.o\
     $(BDir)/transmittable.o\
-    #$(BDir)/message.o\
+    $(BDir)/MyObjects.o\
 
 first: build
 

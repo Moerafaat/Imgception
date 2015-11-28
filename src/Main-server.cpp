@@ -1,15 +1,33 @@
 #include <iostream>
+#include <string>
+#include <cstring>
 #include "Views.h"
-
+#include "MyObjects.h"
 using namespace std;
 
-int main(int argc, char *argv[]){
-    //ServerPRogram:
-    //Init Stub:
-    //  set for callbacks
+//Server Stub Maybe?
+void PrintMessage(WorkerView& Worker, const ServerMessage& initMsg){
+    MyString str;
+    if(Worker.recieveObject(&str, 10000)){
+        cout << "Error while recieveing MyString." << endl;
+        return;
+    }
 
+    //Sending acknowledgment
+    Acknowledgment a(true);
+    if(Worker.sendObject(&a)){
+        cout << "Error while sending Acknowledgment." << endl;
+        return;
+    }
+
+    cout << str.str << endl;
+}
+//End of ServerStub
+
+int main(int argc, char *argv[]){
     ServerView Server(5000);
-    char c; cin >> c;
+    Server.setCallbackFunc(0x01, PrintMessage);
+    char c; cin >> c;   //Just to help testing dropped packets
     cout << "LOG::Server is up" << endl;
     unsigned int fromIP;
     unsigned short fromPort;

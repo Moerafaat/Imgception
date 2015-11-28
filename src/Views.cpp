@@ -11,11 +11,6 @@ ServerMessage::ServerMessage(const unsigned char v) : msgID(nextID++), msgVector
 ServerMessage::ServerMessage(const unsigned int ID, const unsigned char v) : msgID(ID), msgVector(v), payload(nullptr), size(0){
 
 }
-ServerMessage::ServerMessage(const char* buf) : msgID(NetworkToHost(*(unsigned int*)buf)), msgVector(buf[4]), size(NetworkToHost(*(unsigned int*)(buf + 5))), payload(nullptr){
-    //Need to check buf sizes to avoid crashes
-    if(size != 0)
-        memcpy(payload = new char[size], buf+9, size);
-}
 ServerMessage::ServerMessage(ServerMessage&& cpy) : msgID(cpy.msgID), msgVector(cpy.msgVector), payload(cpy.payload), size(cpy.size){
     cpy.payload = nullptr;
 }
@@ -51,6 +46,16 @@ char* ServerMessage::serialize(int& sz) const{
     *(unsigned int*)(ret+5) = HostToNetwork(size);
     if(size != 0) memcpy(ret + 9, payload, size);
     return ret;
+}
+bool ServerMessage::deserialize(const char * const buf, const unsigned int sz){
+    if(sz < 9) return false;
+    msgID = NetworkToHost(*(unsigned int*)buf);
+    msgVector = buf[4];
+    size = NetworkToHost(*(unsigned int*)(buf + 5));
+    payload = nullptr;
+    if(size + 9 != sz) return false;
+    if(size != 0) (payload = new char[size], buf+9, size);
+    return true;
 }
 
 unsigned int ServerMessage::getID() const{
@@ -99,6 +104,9 @@ void ServerView::unlockWorker(WorkerView *Worker){
 	if(pthread_mutex_unlock(&workersLockMutex)) throw("Unable to unlock mutex");
 }
 
+void ServerView::setCallbackFunc(const unsigned char vector, void(*func)(WorkerView&, const ServerMessage&)){
+    callbackFunc[vector] = func;
+}
 ServerMessage ServerView::listen(unsigned int& fromIP, unsigned short& fromPort){
 	char *buffer;
     int size;   //Should checking redundency be done here? OR in the stub? I think the stub
@@ -106,12 +114,13 @@ ServerMessage ServerView::listen(unsigned int& fromIP, unsigned short& fromPort)
     if(buffer == nullptr) return ServerMessage(0xFF);       //Error Message
     fromIP = server_socket.getPeerIP();
     fromPort = server_socket.getPeerPort();
-    ServerMessage ret(buffer);
+    ServerMessage ret;
+    ret.deserialize(buffer, size);
     delete [] buffer;
     return ret;
 }
 void ServerView::deployWorker(const unsigned int peerIP, const unsigned short peerPort, const ServerMessage& msg){
-	lockWorker()->deploy(peerIP, peerPort, msg);   //Should add Queuing
+	if(freeWorkers.size()) lockWorker()->deploy(peerIP, peerPort, msg);
 }
 void ServerView::cleanExit(){   //Should be called from the same thread as listening. Until a future solution if found
 	if(!EXIT_FLAG){
@@ -121,6 +130,9 @@ void ServerView::cleanExit(){   //Should be called from the same thread as liste
 }
 bool ServerView::exitStatus() const{
 	return EXIT_FLAG;
+}
+bool ServerView::isWorkerFree() const{
+    return freeWorkers.size();
 }
 
 //WorkerView
@@ -132,58 +144,20 @@ void *WorkerView::process(void * W){
 	while(!Worker->Server->exitStatus()){
         cout << "LOG::Worker deployed for " << Worker->worker_socket.getPeerIP() << "::" << Worker->worker_socket.getPeerPort() << "." << endl;
 
-        buf = ServerMessage(Worker->initMsg.getID()+1, 0x00).serialize(size);
-
+        buf = ServerMessage(Worker->initMsg.getID()+1, 0xFD).serialize(size);
         Worker->worker_socket.asyncWrite(buf, size);
         delete [] buf;
 
         //Call back functions based on msgVector
-        //...
-        switch(Worker->initMsg.getVector()){
-        case 0x01:  //Sending Message
-        {   //some callback that does the following
-            //Reading/Sending message should be encapsulated in a Worer::SomeFuntion(transmittable*);
-            //Sending/Reading Message functions should be done in a way to garentee dilievery exactly once or faliure reported.
-            //Thus, here UDP::Read/UDP::Write should be replaced with those function and here will assume that they will always succeed or if faild I will not try again (Other wise the stub shold handel faliures if he wants to try again).
-
-            if((buf = Worker->worker_socket.syncRead(size, 10000)) == nullptr){
-                cout << "LOG::Error while proccessing Get Vector. Response timedout." << endl;
-                break;
-            }
-            if(size <= 0){
-                cout << "LOG::Error while proccessing Get Vector." << endl;
-                delete [] buf;
-                break;
-            }
-            //Sould be done with some transmittable* and exported to the stub and deserialization.
-            //For now I am using ServerMessage.
-            ServerMessage msg(buf); delete [] buf;
-            if(msg.getVector() != 0x02 || msg.getPayload() == nullptr){
-                cout << "Error... Invalid packet." << endl;
-                break;
-            }
-
-            //Sending acknowledgment
-            buf = ServerMessage(msg.getID()+1, 0xFE).serialize(size);
-            if(Worker->worker_socket.asyncWrite(buf, size) < 0){
-                cout << "Unable to send acknowledgment." << endl;
-                delete [] buf;
-                break;
-            }
-            cout << msg.getPayload() << endl;
-            delete [] buf;
-        }
-        break;
-        default:
-            cout << "LOG::Message Vector is not recognized." << endl;
-        }
-        //End if call back
+        if(Worker->Server->callbackFunc[Worker->initMsg.getVector()] != nullptr) Worker->Server->callbackFunc[Worker->initMsg.getVector()](*Worker, Worker->initMsg);
+        else if(Worker->Server->callbackFunc[0xFF] != nullptr) Worker->Server->callbackFunc[0xFF](*Worker, Worker->initMsg);
+        else cout << "LOG::Error. Unrecognized message vector." << endl;
 
         //Disconnect  We may do some handshaking to notify the client or something but I don't think we need it
 
         cout << "LOG::Worker exiting!" << endl;
-        Worker->initMsg = ServerMessage();
         Worker->worker_socket.bindPeer(Worker->worker_socket.getMyIP(), Worker->worker_socket.getMyPort());	//Check if there is a better way. It is needed to avoid filling the buffer while not active.
+        Worker->initMsg = ServerMessage();
 		Worker->Server->unlockWorker(Worker);
 		//Do not access/modify Worker here avoid undefined states.
 		if(pthread_mutex_lock(&Worker->available)) throw("Unable to lock mutex");
@@ -209,8 +183,32 @@ void WorkerView::deploy(const unsigned int ip, const unsigned short port, const 
 	initMsg = msg;
 	if(pthread_mutex_unlock(&available)) throw("Unable to unlock mutex");
 }
-
-
+int WorkerView::sendObject(const transmittable * const obj){
+    //No fragmentation yet
+    char *buf;
+    unsigned int size;
+    buf = obj->serialize(size);
+    if(worker_socket.asyncWrite(buf, size) < 0){
+        delete [] buf;
+        return -1;
+    }
+    return 0;
+}
+int WorkerView::recieveObject(transmittable * const obj, const int timeout){
+    //No fragmentation yet
+    char *buf;
+    int size;
+    do{
+        if((buf = worker_socket.syncRead(size, timeout)) == nullptr) return -1;
+        if(!obj->deserialize(buf, size)){
+            delete [] buf;
+            continue;
+        }
+        break;
+    }while(true);
+    delete [] buf;
+    return 0;
+}
 
 //ClientView
 //client_socket(ntohl(inet_addr(hostname)), peer_port)
@@ -220,87 +218,66 @@ ClientView::ClientView(const char *hostname, short peer_port): client_socket(UDP
 	server_port = peer_port;
 }
 
-bool ClientView::connect(const ServerMessage& msg, const unsigned int nTries){
-    if(nTries == 0) return false;
-	int size;
+int ClientView::connect(const ServerMessage& msg, const int timeout){
+    int size;
     char* buf;
     int serializedMSGSize;
     char *serializedMSG = msg.serialize(serializedMSGSize);
-	for(int i = 0; i < nTries; i++){
-        cout << "Trial " << i+1 << "..." << endl;
-        int t;
-        if(client_socket.asyncWrite(serializedMSG, serializedMSGSize) < 0){
-            cout << "Trial " << i+1 << " Failed. Unable to send packet." << endl;
-            continue; //Don't remember the error codes need to check (Didn't have internet access when coding this)
-        }
-        if((buf = client_socket.syncRead(size, 5000)) == nullptr){
-            cout << "Trial " << i+1 << " Failed. Response timeout." << endl;
-            continue;
-        }
-        if(size < 0){
-            cout << "Trial " << i+1 << " Failed. Error occured while reading." << endl;
+
+    if(client_socket.asyncWrite(serializedMSG, serializedMSGSize) < 0) return -1;
+    delete [] serializedMSG;
+
+    do{
+        if(timeout == 0) return 0;
+        if((buf = client_socket.syncRead(size, timeout)) == nullptr){
             client_socket.releasePeer(server_ip, server_port);
+            cout << "LOG::Unable to read or timeout" << endl;
+            return -1;
+        }
+        ServerMessage reply;
+        if(!reply.deserialize(buf, size)){
+            cout << "LOG::Unable to deserialize" << endl;
             delete [] buf;
             continue;
         }
-
-        ServerMessage reply(buf); delete [] buf;
-		if(msg.getID() + 1 != reply.getID() || reply.getVector() != 0x00 && reply.getPayloadSize() != 0){
-            cout << "Trial " << i+1 << " Failed. Invalid packet." << endl;
-            client_socket.releasePeer(server_ip, server_port);
+        delete [] buf;
+        if(reply.getID() != msg.getID() + 1 || reply.getVector() != 0xFD && reply.getPayloadSize() != 0){
+            cout << "LOG::Invalid packet" << endl;
             continue;
         }
-        client_socket.bindPeer(client_socket.getPeerIP(), client_socket.getPeerPort());
-        cout << "Trial " << i+1 << " Successful." << endl;
-        //I think we might 2 more handshakes (send to worker, recieve from worker) or at least 1 more (send to worker ack) It is better so that the worker knows if the client is reachable.
-        //On a second thought, I think it might be harder than it seems. How should the client check if there is duplicates?
-        delete [] serializedMSG;
-        return true;
-	}
-    delete [] serializedMSG;
-    return false;
+        break;
+    }while(true);
+    client_socket.bindPeer(client_socket.getPeerIP(), client_socket.getPeerPort());
+    cout << "LOG::Sucess" << endl;
+
+    return 0;
 }
 void ClientView::disconnect(){
 	client_socket.releasePeer(server_ip, server_port);
 }
-bool ClientView::send(const ServerMessage& msg){
-    int size;
-    char *buf = msg.serialize(size);
-    //Assuming no need for fragmentation
+int ClientView::sendObject(const transmittable * const obj){
+    //No fragmentation yet
+    char *buf;
+    unsigned int size;
+    buf = obj->serialize(size);
     if(client_socket.asyncWrite(buf, size) < 0){
-        cout << "Unable to send packet." << endl;
         delete [] buf;
-        return false; //Don't remember the error codes need to check (Didn't have internet access when coding this)
+        return -1;
     }
-    delete [] buf;
-    return true;
+    return 0;
 }
-ServerMessage ClientView::recieve(){
+int ClientView::recieveObject(transmittable * const obj, const int timeout){
+    //No fragmentation yet
     char *buf;
     int size;
-    if((buf = client_socket.syncRead(size, 5000)) == nullptr){
-        cout << "LOG::Error. Timeout on Recieve." << endl;
-        return ServerMessage(0xFF);
-    }
-    if(size < 0){
-        cout << "LOG::Error recievning message." << endl;
-        client_socket.releasePeer(server_ip, server_port);
-        delete [] buf;
-        return ServerMessage(0xFF);
-    }
-    ServerMessage msg(buf);
+    do{
+        if((buf = client_socket.syncRead(size, timeout)) == nullptr) return -1;
+        if(!obj->deserialize(buf, size)){
+            delete [] buf;
+            continue;
+        }
+        break;
+    }while(true);
     delete [] buf;
-    return msg;
+    return 0;
 }
-/*headerMessage *ClientView::execute(const headerMessage *msg){
-	string tstr;
-	tstr.push_back(1);
-	tstr += *reinterpret_cast<const string*>(msg);
-	int size = client_socket.asyncWrite(tstr.c_str(), tstr.size() + 1);
-
-	return nullptr;
-}*/
-
-// Send Reply.
-// Port to Worker.
-// Handle spamming.

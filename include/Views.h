@@ -16,7 +16,7 @@ private:
     static unsigned int nextID;
 private:
     unsigned int msgID;
-    unsigned char msgVector;    //msgVector 0x00 is reserved. It means a Null message. Internally used for checking connectivity and acknowledgments.
+    unsigned char msgVector;    //msgVector 0xFD is reserved. It is used to initialize connection between WorkerView and ClientView.
                                 //msgVector 0xFE is reserved. It means an acknowledgment message.
                                 //msgVector 0xFF is reserved. It means an Error message.
     char *payload;
@@ -24,7 +24,6 @@ private:
 public:
     ServerMessage(const unsigned char = 0);
     ServerMessage(const unsigned int, const unsigned char);
-    ServerMessage(const char*);   //Different way of deserializable to emphasize that it part of the middleware and not a typical transmittable.
     ServerMessage(ServerMessage&&);
     ~ServerMessage();
 
@@ -32,6 +31,7 @@ public:
     ServerMessage& operator=(ServerMessage&&);
 
     char* serialize(int&) const;
+    bool deserialize(const char * const , const unsigned int);
 
     unsigned int getID() const;
     unsigned char getVector() const;
@@ -47,11 +47,12 @@ class ServerView{
     friend class WorkerView;
 private:
 	static const int MAX_WORKERS = 100;
+    bool EXIT_FLAG;
 	UDPsocket server_socket;
 	WorkerView *workers[MAX_WORKERS];
 	vector<WorkerView *> freeWorkers;
 	pthread_mutex_t workersLockMutex;
-	bool EXIT_FLAG;
+    void (*callbackFunc[256])(WorkerView&, const ServerMessage&);
 
     WorkerView *lockWorker();
     void unlockWorker(WorkerView *);
@@ -59,10 +60,12 @@ public:
 	ServerView(unsigned short);
 	~ServerView();
 
+    void setCallbackFunc(const unsigned char, void(*)(WorkerView&, const ServerMessage&));
 	ServerMessage listen(unsigned int&, unsigned short&);
     void deployWorker(const unsigned int, const unsigned short, const ServerMessage&);
     void cleanExit();
 	bool exitStatus() const;
+    bool isWorkerFree() const;
 };
 //getRequest, doOperation, sendReply.
 
@@ -83,6 +86,8 @@ public:
 	~WorkerView();
 
 	void deploy(const unsigned int, const unsigned short, const ServerMessage&); //API to deploy thread with IP:Port
+    int sendObject(const transmittable * const);
+    int recieveObject(transmittable * const, const int = -1);
 };
 //should provide function for the stuf to use that does the following:
 //1-Send/Recieve a whole message. It should execute the serializtion/deserialization proccess and partition collect the message to several packets if needed.
@@ -107,11 +112,10 @@ public:
 	unsigned int getMyIP() const;
 	unsigned int getPeerIP() const;
 
-	bool connect(const ServerMessage&, const unsigned int = 1);    //I removed nTries and added extra parameter here because I think the stub should handel the maybe/atleastonce/atmostonce. The other option is to force all transmittable have some kind of clientID and logical clock associated with them which might require some refactoring if not a lot. Besides I am not sure if we need to make it in this layer or is it okay to make it in the stub. Not sure which is easier.
+	int connect(const ServerMessage&, const int = -1); //0 timeout = don't wait for worker
 	void disconnect();
-    bool send(const ServerMessage&); //Should be transmittable* but meeh for now.
-    ServerMessage recieve();
-	//headerMessage *execute(const headerMessage *); // Send an asynchronous message to the server.
+    int sendObject(const transmittable * const);
+    int recieveObject(transmittable * const, const int = -1);
  };
 //Should provide functionality to send/recieve message, handel fragmentation and support maybe/atLeastOnce/atMostOnce
 //+Check Workers for similar functionalites

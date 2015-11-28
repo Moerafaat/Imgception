@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "Views.h"
+#include "MyObjects.h"
 using namespace std;
 
 //Stub
@@ -8,24 +9,32 @@ using namespace std;
 //"10.40.40.185"
 ClientView Client("localhost", 5000); // Construct a client.
 
-bool RemotePrint(string str){
-    if(!Client.connect(ServerMessage(0x01))){
-        cout << "Unable to connect with server" << endl;
+bool RemotePrint(MyString str){
+    if(Client.connect(ServerMessage(0x01), 5000) == -1){
+        cout << "Unable to connect with server worker" << endl;
         return false;
     }
     //Send message
-    ServerMessage msg(0x02);
-    msg.setPayload(str.c_str(), str.size() + 1);
-    if(!Client.send(msg)){
+    if(Client.sendObject(&str)){
         cout << "Unable to send message" << endl;
+        Client.disconnect();
         return false;
     }
-    msg = Client.recieve();
+    Acknowledgment a;
+    if(Client.recieveObject(&a, 10000) == -1 || !a.ack){
+        cout << "Message not acknowged." << endl;
+        Client.disconnect();
+        return false;
+    }
+    
     Client.disconnect();
-    return msg.getVector() == 0xFE;
+    return true;
 }
 bool RemoteExitServer(){
-    
+    if(Client.connect(ServerMessage(0x00), 0) == -1)
+        return false;
+
+    Client.disconnect();
     return true;
 }
 
@@ -39,7 +48,7 @@ int main(int argc, char *argv[]){
             else cout << "LOG::Remote Exit failed!" << endl;
         }
         else{
-            if(RemotePrint(str)) cout << "LOG::Message delievered" << endl;
+            if(RemotePrint(MyString(str))) cout << "LOG::Message delievered" << endl;
             else cout << "LOG::Message delievary failed!" << endl;
         }
 	}

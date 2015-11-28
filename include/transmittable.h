@@ -3,13 +3,14 @@
 
 // Will be inherited: To use serialization.
 class transmittable{
-    transmittable() = delete;
-    transmittable(const transmittable&) = delete;
-    transmittable(transmittable&&) = delete;
-    ~transmittable() = delete;
 public:
-    virtual char *serialize(unsigned int &) const = 0;
-    virtual void deserialize(const char * const, const unsigned int) = 0;
+    transmittable() = default;
+    transmittable(const transmittable&) = default;
+    transmittable(transmittable&&) = default;
+    ~transmittable() = default;
+
+    virtual char *serialize(unsigned int&) const = 0;
+    virtual bool deserialize(const char * const, const unsigned int) = 0;
 };
 
 unsigned char NetworkToHost(const unsigned char);
