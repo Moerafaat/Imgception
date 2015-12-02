@@ -10,28 +10,28 @@ using namespace std;
 ClientView Client("localhost", 5000); // Construct a client.
 
 bool RemotePrint(MyString str){
-    if(Client.connect(ServerMessage(0x01), 5000) == -1){
+    if(!Client.connect(ServerMessage(0x01), 5000)){
         cout << "Unable to connect with server worker" << endl;
         return false;
     }
     //Send message
-    if(Client.sendObject(&str)){
+    if(!Client.sendObject(&str)){
         cout << "Unable to send message" << endl;
         Client.disconnect();
         return false;
     }
     Acknowledgment a;
-    if(Client.recieveObject(&a, 10000) == -1 || !a.ack){
+    if(!Client.recieveObject(&a) || !a.ack){
         cout << "Message not acknowged." << endl;
         Client.disconnect();
         return false;
     }
-    
+
     Client.disconnect();
     return true;
 }
 bool RemoteExitServer(){
-    if(Client.connect(ServerMessage(0x00), 0) == -1)
+    if(!Client.connect(ServerMessage(0x00), 0))
         return false;
 
     Client.disconnect();

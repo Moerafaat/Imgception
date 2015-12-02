@@ -2,7 +2,7 @@
 #define TRANSMITTABLE_H
 
 // Will be inherited: To use serialization.
-class transmittable{
+class Transmittable{
 public:
     transmittable() = default;
     transmittable(const transmittable&) = default;

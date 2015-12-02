@@ -4,10 +4,9 @@
 #include <vector>
 #include <pthread.h>
 #include "UDPsocket.h"
-#include "transmittable.h"
-using namespace std;
 
 class WorkerView;
+class transmittable;
 
 class ServerMessage{
     //I didn't put it in message.h because it is not part of the middleware library (Should explain in personal)
@@ -30,8 +29,8 @@ public:
     ServerMessage& operator=(const ServerMessage&);
     ServerMessage& operator=(ServerMessage&&);
 
-    char* serialize(int&) const;
-    bool deserialize(const char * const , const unsigned int);
+    char *serialize(unsigned int&) const;
+    bool deserialize(const char * const , const int);
 
     unsigned int getID() const;
     unsigned char getVector() const;
@@ -46,16 +45,13 @@ class ServerView{
 	ServerView(ServerView&&) = delete;
     friend class WorkerView;
 private:
-	static const int MAX_WORKERS = 100;
+	static const int MAX_WORKERS = 10;
     bool EXIT_FLAG;
 	UDPsocket server_socket;
 	WorkerView *workers[MAX_WORKERS];
-	vector<WorkerView *> freeWorkers;
+	std::vector<WorkerView *> freeWorkers;
 	pthread_mutex_t workersLockMutex;
     void (*callbackFunc[256])(WorkerView&, const ServerMessage&);
-
-    WorkerView *lockWorker();
-    void unlockWorker(WorkerView *);
 public:
 	ServerView(unsigned short);
 	~ServerView();
@@ -63,11 +59,13 @@ public:
     void setCallbackFunc(const unsigned char, void(*)(WorkerView&, const ServerMessage&));
 	ServerMessage listen(unsigned int&, unsigned short&);
     void deployWorker(const unsigned int, const unsigned short, const ServerMessage&);
-    void cleanExit();
+    void cleanExit();   //Should be called from the same thread as listening. Until a future solution if found
 	bool exitStatus() const;
     bool isWorkerFree() const;
+private:
+    WorkerView *lockWorker();
+    void unlockWorker(WorkerView *);
 };
-//getRequest, doOperation, sendReply.
 
 class WorkerView{
 	WorkerView() = delete;
@@ -75,25 +73,20 @@ class WorkerView{
 	WorkerView(WorkerView&&) = delete;
 private:
 	static void *process (void *); // Process to be spawned in a thread.
-	UDPsocket worker_socket;
+private:
+    UDPsocket worker_socket;
 	pthread_t thread_id;
 	pthread_mutex_t available;
 	ServerMessage initMsg;
 	ServerView *Server;
-
 public:
 	WorkerView(ServerView *);
 	~WorkerView();
 
 	void deploy(const unsigned int, const unsigned short, const ServerMessage&); //API to deploy thread with IP:Port
-    int sendObject(const transmittable * const);
-    int recieveObject(transmittable * const, const int = -1);
+    bool sendObject(const transmittable * const, const unsigned int = 5);
+    bool recieveObject(transmittable * const, const unsigned int = 5);
 };
-//should provide function for the stuf to use that does the following:
-//1-Send/Recieve a whole message. It should execute the serializtion/deserialization proccess and partition collect the message to several packets if needed.
-//2-Set message vector call back functions.
-//+Check Client for similar functionalites
-
 
 class ClientView{
 	ClientView() = delete;
@@ -107,16 +100,9 @@ public:
 	ClientView(const char *, short);
 	~ClientView() = default;
 
-    unsigned short getMyPort() const;
-	unsigned short getPeerPort() const;
-	unsigned int getMyIP() const;
-	unsigned int getPeerIP() const;
-
-	int connect(const ServerMessage&, const int = -1); //0 timeout = don't wait for worker
+	bool connect(const ServerMessage&, const int = -1); //0 timeout = don't wait for worker
 	void disconnect();
-    int sendObject(const transmittable * const);
-    int recieveObject(transmittable * const, const int = -1);
+    bool sendObject(const transmittable * const, const unsigned int = 5);
+    bool recieveObject(transmittable * const, const unsigned int = 5);
  };
-//Should provide functionality to send/recieve message, handel fragmentation and support maybe/atLeastOnce/atMostOnce
-//+Check Workers for similar functionalites
 #endif

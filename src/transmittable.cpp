@@ -1,5 +1,5 @@
 #include "transmittable.h"
-#include <arpa/inet.h>
+#include <netinet/in.h>
 
 unsigned char NetworkToHost(const unsigned char val){
     return val;
@@ -14,7 +14,7 @@ unsigned long NetworkToHost(const unsigned long val){
     return ntohl(val);
 }
 unsigned long long NetworkToHost(const unsigned long long val){ //From BigEndian Regardless (until we find a portable solution)
-    const unsigned int sz = sizeof(val) / sizeof(char);
+    const int sz = sizeof(val) / sizeof(char);
     const char *temp = (const char*)&val;
     unsigned long long ret ;
     for(int i = 0; i < sz; i++){
@@ -36,7 +36,7 @@ long NetworkToHost(const long val){
     return ntohl(val);
 }
 long long NetworkToHost(const long long val){ //From BigEndian Regardless (until we find a portable solution)
-    const unsigned int sz = sizeof(val) / sizeof(char);
+    const int sz = sizeof(val) / sizeof(char);
     const char *temp = (const char*)&val;
     long long ret ;
     for(int i = 0; i < sz; i++){
@@ -59,7 +59,7 @@ unsigned long HostToNetwork(const unsigned long val){
     return htonl(val);
 }
 unsigned long long HostToNetwork(const unsigned long long val){ //To BigEndian Regardless (until we find a portable solution)
-    const unsigned int sz = sizeof(val) / sizeof(char);
+    const int sz = sizeof(val) / sizeof(char);
     char temp[sz];
     unsigned long long tval = val;
     for(int i = 0; i < sz; i++, tval >>= sizeof(char) << 3)

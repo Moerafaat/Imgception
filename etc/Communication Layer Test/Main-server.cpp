@@ -8,14 +8,14 @@ using namespace std;
 //Server Stub Maybe?
 void PrintMessage(WorkerView& Worker, const ServerMessage& initMsg){
     MyString str;
-    if(Worker.recieveObject(&str, 10000)){
+    if(!Worker.recieveObject(&str)){
         cout << "Error while recieveing MyString." << endl;
         return;
     }
 
     //Sending acknowledgment
     Acknowledgment a(true);
-    if(Worker.sendObject(&a)){
+    if(!Worker.sendObject(&a)){
         cout << "Error while sending Acknowledgment." << endl;
         return;
     }
@@ -53,3 +53,20 @@ int main(int argc, char *argv[]){
 
 	return 0;
 }
+
+/*
+imgception
+    :MyKeyFile
+        -KeyFile
+        -Name
+    :PeerKeyFile
+        -Key1 Name
+    <Key1>
+    <Key2>
+    <Key2>
+        :Header
+            -img1 Path img1name img1 size img1
+            -img1 Path img1name img1 size img1
+        :img1.png
+        :img2.png
+*/

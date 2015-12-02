@@ -1,6 +1,7 @@
+#include <cstring>
+#include <netdb.h>
+#include <unistd.h>
 #include "UDPsocket.h"
-
-using namespace std;
 
 unsigned int UDPsocket::resolveHostName(const char* const HostName){ // Resolving the host name to the IP.
 	hostent *host = gethostbyname(HostName);
