@@ -46,7 +46,7 @@ char *onlinePeers::serialize(unsigned int& size) const{
     }
     return serial;
 }
-#include <string>
+
 bool onlinePeers::deserialize(const char * const buf, const unsigned int size){
     static const unsigned int peerSize = Key::PubKeySize+4+2;
     if(size < 4) return false;
