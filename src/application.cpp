@@ -10,13 +10,14 @@
 #include "onlinepeers.h"
 
 Application::Application(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::Application), Client("10.40.51.84", 5000){
+    : QMainWindow(parent), ui(new Ui::Application), Client("10.40.51.84", 5000), PU(this, 10){
     ui->setupUi(this);
     // Creating core application folders.
     Globals::InitFolders();
 }
 
 Application::~Application(){
+    PU.Exit();
     delete ui;
 }
 
@@ -160,7 +161,7 @@ bool Application::updatePeers(){
         logMessage("Unable to recieve object");
         return false;
     }
-
+    //Actually update
     Client.disconnect(); // Disconnect from worker.
     logMessage("Refresh done!");
     return true;
@@ -214,7 +215,8 @@ QString Application::getOwnName(){
 
 // ------------------------------Slots--------------------------------------------- //
 void Application::on_btn_sign_in_clicked(){
-    login(true);
+    if(login(true))
+        PU.start();
 }
 
 void Application::on_btn_sign_up_clicked(){
@@ -224,7 +226,8 @@ void Application::on_btn_sign_up_clicked(){
         return;
     }
     if(signUp(username)) // Successful signup.
-        login(true);
+        if(login(true))
+            PU.start();
 }
 
 void Application::on_btn_sign_out_clicked(){
@@ -244,7 +247,10 @@ void Application::on_btn_new_image_clicked(){
 }
 
 void Application::on_btn_refresh_clicked(){
-    updatePeers();
+    if(PU.Lock()){
+        updatePeers();
+        PU.Unlock();
+    }
 }
 
 void Application::on_btn_edit_clicked(){

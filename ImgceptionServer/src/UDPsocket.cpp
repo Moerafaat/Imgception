@@ -99,7 +99,7 @@ void UDPsocket::bindPeer(const unsigned int IP, const unsigned short port){
 	peer_addr.sin_addr.s_addr = htonl(IP);
 	bzero(&(peer_addr.sin_zero), 8);
 
-	connect(sock, (sockaddr *)&peer_addr, sin_size);
+    //connect(sock, (sockaddr *)&peer_addr, sin_size);
 }
 void UDPsocket::releasePeer(const unsigned int IP, const unsigned short port){
 	peer_addr.sin_family = AF_INET;
@@ -107,7 +107,7 @@ void UDPsocket::releasePeer(const unsigned int IP, const unsigned short port){
 	peer_addr.sin_addr.s_addr = 0;
 	bzero(&(peer_addr.sin_zero), 8);
 
-	connect(sock, (sockaddr *)&peer_addr, sin_size);
+    //connect(sock, (sockaddr *)&peer_addr, sin_size);
 
 	peer_addr.sin_port = htons(port);
 	peer_addr.sin_addr.s_addr = htonl(IP);

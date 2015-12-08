@@ -11,6 +11,7 @@
 #include "peer.h"
 #include "update.h"
 #include "key.h"
+#include "PeriodicUpdate.h"
 #include "Views.h"
 
 using namespace std;
@@ -26,6 +27,7 @@ public:
     explicit Application(QWidget *parent = 0);
     ~Application();
 
+    bool updatePeers(); // Stub entry needed.
 private slots:
     void on_btn_sign_in_clicked();
     void on_btn_sign_up_clicked();
@@ -49,7 +51,8 @@ private:
     bool signUp(QString); // Local invocation.
     void logout(); // Stub entry needed.
 
-    bool updatePeers(); // Stub entry needed.
+    PeriodicUpdate PU;
+
     pair< vector<Image>, vector<Update> > getNotifications(); // Stub entry needed (store the images first in case an update follows it).
 
     QVector<Image> getAllImages(); // Local invocation.
