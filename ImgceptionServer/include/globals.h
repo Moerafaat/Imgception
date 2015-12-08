@@ -13,6 +13,8 @@ public:
     static const QString ApplicationRoot;
     static const QString MeFolderPath;
     static const QString TempFolderPath;
+
+    static void InitFolders();
 };
 
 #endif // GLOBALS_H

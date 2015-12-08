@@ -1,4 +1,4 @@
-#include <QDebug>
+#include <QTextStream>
 #include <cstdio>
 #include <openssl/pem.h>
 #include <QFile>
@@ -123,8 +123,7 @@ bool Key::setFromString(QString str, bool IsPrivate){
     QTextStream stream(&file);
     stream << str;
     file.close();
-    readFromFile(Globals::TempFolderPath + "key", IsPrivate);
-    return true;
+    return readFromFile(Globals::TempFolderPath + "key", IsPrivate);
 }
 
 bool Key::isPublic(){

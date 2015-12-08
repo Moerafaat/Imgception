@@ -12,6 +12,8 @@ public:
     onlinePeers();
     ~onlinePeers() = default;
 
+    onlinePeers& operator=(const onlinePeers&);
+
     bool pushPeer(QString, const unsigned int, const unsigned short);
     bool pushPeer(Key&, const unsigned int, const unsigned short);
     unsigned int getPeerCount() const;

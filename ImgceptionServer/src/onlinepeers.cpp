@@ -4,6 +4,15 @@ onlinePeers::onlinePeers() : nPeers(0), peerKey(0), peerIP(0), peerPort(0){
 
 }
 
+onlinePeers& onlinePeers::operator=(const onlinePeers& cpy){
+    nPeers = cpy.nPeers;
+    peerKey = cpy.peerKey;
+    peerIP = cpy.peerIP;
+    peerPort = cpy.peerPort;
+
+    return *this;
+}
+
 bool onlinePeers::pushPeer(QString key, const unsigned int ip, const unsigned short port){
     nPeers++;
     peerKey.push_back(key);
@@ -27,7 +36,7 @@ unsigned int onlinePeers::getPeerCount() const{
 Key onlinePeers::getPeerKey(unsigned int idx) const{
     if(idx >= nPeers) return Key();
     Key ret;
-    ret.setFromString(peerKey[idx]);
+    if(!ret.setFromString(peerKey[idx])) return Key();
     return ret;
 }
 

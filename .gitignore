@@ -2,4 +2,4 @@ build/*.o
 App-*
 *.log
 *.pro.user*
-build-*
+build-*/*

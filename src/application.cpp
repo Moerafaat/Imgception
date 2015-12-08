@@ -1,5 +1,4 @@
 #include <QDebug>
-
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -15,12 +14,7 @@ Application::Application(QWidget *parent)
     ui->setupUi(this);
 
     // Creating core application folders.
-    QDir tDir(Globals::ApplicationRoot);
-    if(!tDir.exists()) tDir.mkpath(".");
-    tDir.setPath(Globals::MeFolderPath);
-    if(!tDir.exists()) tDir.mkpath(".");
-    tDir.setPath(Globals::TempFolderPath);
-    if(!tDir.exists()) tDir.mkpath(".");
+    Globals::InitFolders();
 }
 
 Application::~Application(){
@@ -151,10 +145,13 @@ void Application::logout(){
 
 // Stub entry.
 bool Application::updatePeers(){
+    if(!my_public_key.isReady()){
+        logMessage("You need to sign in first!");
+        return false;
+    }
     ServerMessage msg(0x01);
-    qDebug() << my_public_key.getAsString();
     msg.setPayload(my_public_key.getAsString().toStdString().c_str(), my_public_key.getAsString().size());
-    if(!Client.connect(msg)){
+    if(!Client.connect(msg, 1000)){
         logMessage("Unable to connect to worker.");
         return false;
     }
@@ -164,10 +161,9 @@ bool Application::updatePeers(){
         logMessage("Unable to recieve object");
         return false;
     }
-    qDebug() << "I got something." << endl;
-    qDebug() << online.getPeerCount();
-    qDebug() << online.getPeerKey(0).getAsString();
+
     Client.disconnect(); // Disconnect from worker.
+    logMessage("Refresh done!");
     return true;
 }
 

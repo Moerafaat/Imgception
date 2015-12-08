@@ -1,8 +1,6 @@
 #include <iostream>
-#include <QDir>
 #include <QApplication>
 #include "application.h"
-#include "globals.h"
 
 using namespace std;
 
