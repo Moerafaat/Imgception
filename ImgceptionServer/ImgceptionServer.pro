@@ -7,7 +7,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += src/main.cpp\
+SOURCES += src/main_server.cpp\
     src/Views.cpp \
     src/UDPsocket.cpp \
     src/onlinepeers.cpp \

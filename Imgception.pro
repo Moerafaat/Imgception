@@ -12,7 +12,7 @@ TARGET = Imgception
 TEMPLATE = app
 
 
-SOURCES += src/main.cpp \
+SOURCES += src/main_client.cpp \
     src/application.cpp \
     src/image.cpp \
     src/transmittable.cpp \

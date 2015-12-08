@@ -48,14 +48,14 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../ImgceptionServer/src/main.cpp \
+SOURCES       = ../ImgceptionServer/src/main_server.cpp \
 		../ImgceptionServer/src/Views.cpp \
 		../ImgceptionServer/src/UDPsocket.cpp \
 		../ImgceptionServer/src/onlinepeers.cpp \
 		../ImgceptionServer/src/key.cpp \
 		../ImgceptionServer/src/transmittable.cpp \
 		../ImgceptionServer/src/server_globals.cpp 
-OBJECTS       = main.o \
+OBJECTS       = main_server.o \
 		Views.o \
 		UDPsocket.o \
 		onlinepeers.o \
@@ -200,7 +200,7 @@ DIST          = /home/mohammed/Qt5.5.1/5.5/gcc_64/mkspecs/features/spec_pre.prf 
 		../ImgceptionServer/include/UDPsocket.h \
 		../ImgceptionServer/include/onlinepeers.h \
 		../ImgceptionServer/include/key.h \
-		../ImgceptionServer/include/globals.h ../ImgceptionServer/src/main.cpp \
+		../ImgceptionServer/include/globals.h ../ImgceptionServer/src/main_server.cpp \
 		../ImgceptionServer/src/Views.cpp \
 		../ImgceptionServer/src/UDPsocket.cpp \
 		../ImgceptionServer/src/onlinepeers.cpp \
@@ -523,7 +523,7 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../ImgceptionServer/include/transmittable.h ../ImgceptionServer/include/Views.h ../ImgceptionServer/include/UDPsocket.h ../ImgceptionServer/include/onlinepeers.h ../ImgceptionServer/include/key.h ../ImgceptionServer/include/globals.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../ImgceptionServer/src/main.cpp ../ImgceptionServer/src/Views.cpp ../ImgceptionServer/src/UDPsocket.cpp ../ImgceptionServer/src/onlinepeers.cpp ../ImgceptionServer/src/key.cpp ../ImgceptionServer/src/transmittable.cpp ../ImgceptionServer/src/server_globals.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../ImgceptionServer/src/main_server.cpp ../ImgceptionServer/src/Views.cpp ../ImgceptionServer/src/UDPsocket.cpp ../ImgceptionServer/src/onlinepeers.cpp ../ImgceptionServer/src/key.cpp ../ImgceptionServer/src/transmittable.cpp ../ImgceptionServer/src/server_globals.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -560,119 +560,7 @@ compiler_clean:
 
 ####### Compile
 
-main.o: ../ImgceptionServer/src/main.cpp ../ImgceptionServer/include/Views.h \
-		../ImgceptionServer/include/UDPsocket.h \
-		../ImgceptionServer/include/onlinepeers.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qvector.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qalgorithms.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobal.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qconfig.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qfeatures.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qsystemdetection.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qprocessordetection.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qcompilerdetection.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypeinfo.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypetraits.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qsysinfo.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qlogging.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qflags.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbasicatomic.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_bootstrap.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qgenericatomic.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_cxx11.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_gcc.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_msvc.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv7.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv6.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv5.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_ia64.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_mips.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_x86.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_unix.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobalstatic.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qmutex.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qnumeric.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qiterator.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qlist.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qrefcount.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydata.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearraylist.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearray.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qnamespace.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstring.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qchar.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringbuilder.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringlist.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qregexp.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringmatcher.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qpoint.h \
-		../ImgceptionServer/include/transmittable.h \
-		../ImgceptionServer/include/key.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QString
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../ImgceptionServer/src/main.cpp
-
-Views.o: ../ImgceptionServer/src/Views.cpp ../ImgceptionServer/include/Views.h \
-		../ImgceptionServer/include/UDPsocket.h \
-		../ImgceptionServer/include/transmittable.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Views.o ../ImgceptionServer/src/Views.cpp
-
-UDPsocket.o: ../ImgceptionServer/src/UDPsocket.cpp ../ImgceptionServer/include/UDPsocket.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o UDPsocket.o ../ImgceptionServer/src/UDPsocket.cpp
-
-onlinepeers.o: ../ImgceptionServer/src/onlinepeers.cpp ../ImgceptionServer/include/onlinepeers.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qvector.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qalgorithms.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobal.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qconfig.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qfeatures.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qsystemdetection.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qprocessordetection.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qcompilerdetection.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypeinfo.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypetraits.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qsysinfo.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qlogging.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qflags.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbasicatomic.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_bootstrap.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qgenericatomic.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_cxx11.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_gcc.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_msvc.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv7.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv6.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv5.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_ia64.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_mips.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_x86.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_unix.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobalstatic.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qmutex.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qnumeric.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qiterator.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qlist.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qrefcount.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydata.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearraylist.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearray.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qnamespace.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstring.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qchar.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringbuilder.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringlist.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qregexp.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringmatcher.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qpoint.h \
-		../ImgceptionServer/include/transmittable.h \
-		../ImgceptionServer/include/key.h \
-		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QString
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o onlinepeers.o ../ImgceptionServer/src/onlinepeers.cpp
-
-key.o: ../ImgceptionServer/src/key.cpp /home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
+main_server.o: ../ImgceptionServer/src/main_server.cpp /home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
 		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qdebug.h \
 		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qalgorithms.h \
 		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobal.h \
@@ -738,6 +626,143 @@ key.o: ../ImgceptionServer/src/key.cpp /home/mohammed/Qt5.5.1/5.5/gcc_64/include
 		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qpoint.h \
 		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qset.h \
 		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QDateTime \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qdatetime.h \
+		../ImgceptionServer/include/Views.h \
+		../ImgceptionServer/include/UDPsocket.h \
+		../ImgceptionServer/include/onlinepeers.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		../ImgceptionServer/include/transmittable.h \
+		../ImgceptionServer/include/key.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QString \
+		../ImgceptionServer/include/globals.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main_server.o ../ImgceptionServer/src/main_server.cpp
+
+Views.o: ../ImgceptionServer/src/Views.cpp ../ImgceptionServer/include/Views.h \
+		../ImgceptionServer/include/UDPsocket.h \
+		../ImgceptionServer/include/transmittable.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Views.o ../ImgceptionServer/src/Views.cpp
+
+UDPsocket.o: ../ImgceptionServer/src/UDPsocket.cpp ../ImgceptionServer/include/UDPsocket.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o UDPsocket.o ../ImgceptionServer/src/UDPsocket.cpp
+
+onlinepeers.o: ../ImgceptionServer/src/onlinepeers.cpp ../ImgceptionServer/include/onlinepeers.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qvector.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qalgorithms.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobal.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qconfig.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qfeatures.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qsystemdetection.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qprocessordetection.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qcompilerdetection.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypeinfo.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypetraits.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qsysinfo.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qlogging.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qflags.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbasicatomic.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qgenericatomic.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_gcc.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_msvc.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv7.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv6.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv5.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_ia64.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_mips.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_x86.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_unix.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobalstatic.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qmutex.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qnumeric.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qiterator.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qlist.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qrefcount.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydata.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearraylist.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearray.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qnamespace.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstring.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qchar.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringbuilder.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringlist.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qregexp.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringmatcher.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qpoint.h \
+		../ImgceptionServer/include/transmittable.h \
+		../ImgceptionServer/include/key.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QString
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o onlinepeers.o ../ImgceptionServer/src/onlinepeers.cpp
+
+key.o: ../ImgceptionServer/src/key.cpp /home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QTextStream \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qtextstream.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qiodevice.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobal.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qconfig.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qfeatures.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qsystemdetection.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qprocessordetection.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qcompilerdetection.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypeinfo.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypetraits.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qsysinfo.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qlogging.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qflags.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbasicatomic.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qgenericatomic.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_gcc.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_msvc.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv7.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv6.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv5.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_ia64.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_mips.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_x86.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_unix.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobalstatic.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qmutex.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qnumeric.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qnamespace.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstring.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qchar.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearray.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qrefcount.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydata.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringbuilder.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qlist.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qalgorithms.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qiterator.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearraylist.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringlist.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qregexp.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringmatcher.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qcoreevent.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qscopedpointer.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qmetatype.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qvarlengtharray.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qcontainerfwd.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qisenum.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject_impl.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qlocale.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qvariant.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qmap.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qpair.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qdebug.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qhash.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qvector.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qpoint.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qset.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qshareddata.h \
 		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/QFile \
 		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qfile.h \
 		/home/mohammed/Qt5.5.1/5.5/gcc_64/include/QtCore/qfiledevice.h \
