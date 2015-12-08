@@ -38,10 +38,10 @@ void Application::logMessage(QString log){
 // ------------------------------Peer Program Functions---------------------------- //
 // Stub entry.
 bool Application::login(bool offline_mode){
-    QString info_path = Globals::ApplicationRoot + "me/info.txt";
-    QString pub_key_path = Globals::ApplicationRoot + "me/pubkey.txt";
-    QString pri_key_path = Globals::ApplicationRoot + "me/prikey.txt";
-    QString owner_images_path = Globals::ApplicationRoot + "me/images.txt";
+    QString info_path = Globals::MeFolderPath + "info.txt";
+    QString pub_key_path = Globals::MeFolderPath + "pubkey.txt";
+    QString pri_key_path = Globals::MeFolderPath + "prikey.txt";
+    QString owner_images_path = Globals::MeFolderPath + "images.txt";
 
     QFileInfo check_info(info_path);
     QFileInfo check_pub_key_path(pub_key_path);

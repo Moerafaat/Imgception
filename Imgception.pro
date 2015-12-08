@@ -18,26 +18,27 @@ SOURCES += src/main.cpp \
     src/transmittable.cpp \
     src/peer.cpp \
     src/update.cpp \
-    src/serverprogram.cpp \
     src/notification.cpp \
     src/notificationheader.cpp \
     src/key.cpp \
     src/globals.cpp \
     src/Views.cpp \
-    src/UDPsocket.cpp
+    src/UDPsocket.cpp \
+    src/onlinepeers.cpp
 
 HEADERS  += include/application.h \
     include/image.h \
     include/transmittable.h \
     include/peer.h \
     include/update.h \
-    include/serverprogram.h \
     include/notification.h \
     include/notificationheader.h \
     include/key.h \
     include/globals.h \
     include/Views.h \
-    include/UDPsocket.h
+    include/UDPsocket.h \
+    include/onlinepeers.h
+
 INCLUDEPATH += include/
 
 FORMS    += application.ui
