@@ -5,10 +5,11 @@
 #include <python2.7/Python.h>
 #include <QString>
 #include <QImage>
+
 class Steganifier
 {
 public:
-  Steganifier(std::string scriptPath,std::string scriptName);
+  Steganifier(QString scriptPath,QString scriptName);
   ~Steganifier();
   char* Steganify(std::vector<QString> paths, QString operation,int&size);
   QImage Steganify(QString fakePath, QString realPath);

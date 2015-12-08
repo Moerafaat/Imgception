@@ -6,13 +6,16 @@
 #include <QImage>
 #include "transmittable.h"
 #include "key.h"
+#include "Steganifier.h"
 
 class Image : public Transmittable{
 public:
     Image() = default;
     Image(const Image&) = default;
     Image(Image&&) = default;
-    Image(int, int, QString, QString, int, int);
+    Image(int, Key, QString, QString, int, int);
+    //fake path, real path, pathToSaveTo, name
+    Image(int Id, Key, QString, QString, QString, QString);
     ~Image() = default;
 
     Image& operator=(const Image&);
@@ -21,6 +24,8 @@ public:
     bool deserialize(const char * const, const unsigned int);
 
     QImage getImage(); // Local invocation. Return image for Display (Open the file and Decode Steganography).
+
+    static Steganifier s;
 
     int ID; // Image identifier.
     Key owner_key; // Image owner.

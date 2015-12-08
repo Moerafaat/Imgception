@@ -3,9 +3,19 @@
 #include <QString>
 #include <cstring>
 #include "image.h"
+#include "globals.h"
 
-Image::Image(int Id, int OwnerKey, QString Path, QString Name, int UpCount, int ViewLimit){
+Steganifier Image::s(QString(Globals::ApplicationRoot),QString("Steganify"));
 
+Image::Image(int Id, Key OwnerKey, QString Path, QString Name, int UpCount, int ViewLimit):ID(Id),owner_key(OwnerKey),view_limit(-1),up_count(0),path(Path),image_name(Name)
+{
+
+}
+
+Image::Image(int Id, Key OwnerKey, QString fakePath, QString realPath, QString pathToSaveTo, QString imageName):ID(Id),owner_key(OwnerKey),image_name(imageName),path(pathToSaveTo),view_limit(-1),up_count(0)
+{
+    QImage image = s.Steganify(fakePath,realPath);
+    image.save(pathToSaveTo+imageName,"PNG");
 }
 
 Image& Image::operator=(const Image& image){
@@ -61,5 +71,15 @@ bool Image::deserialize(const char* const SerializedImage, const unsigned int Si
 
 // Stub entry.
 QImage Image::getImage(){ // Function that returns the image for display.
-
+    if(up_count < view_limit)
+    {
+        up_count++;
+        return s.DeSteganify(path+image_name);
+    }
+    else
+    {
+        QFile imageFile(path+image_name); QTextStream imageStream(&imageFile);
+        QImage temp; temp.load(imageStream.readAll().toStdString().c_str(),"PNG");
+        return temp;
+    }
 }

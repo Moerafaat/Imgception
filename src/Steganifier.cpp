@@ -1,13 +1,13 @@
 #include "Steganifier.h"
 
-Steganifier::Steganifier(std::string scriptPath,std::string scriptName)
+Steganifier::Steganifier(QString scriptPath,QString scriptName)
 {
-  std::string pathOfScript = "import sys; sys.path.insert(0,'";
+  QString pathOfScript = "import sys; sys.path.insert(0,'";
   pathOfScript+=scriptPath;
   pathOfScript+="')";
   Py_Initialize();
-  PyRun_SimpleString (pathOfScript.c_str());
-  pName = PyString_FromString(scriptName.c_str());
+  PyRun_SimpleString (pathOfScript.toStdString().c_str());
+  pName = PyString_FromString(scriptName.toStdString().c_str());
   pModule = PyImport_Import(pName);
 }
 
