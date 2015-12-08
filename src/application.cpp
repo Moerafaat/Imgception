@@ -10,7 +10,7 @@
 #include "onlinepeers.h"
 
 Application::Application(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::Application), Client("localhost", 5000){
+    : QMainWindow(parent), ui(new Ui::Application), Client("10.40.51.84", 5000){
     ui->setupUi(this);
     // Creating core application folders.
     Globals::InitFolders();

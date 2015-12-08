@@ -1,11 +1,14 @@
 #include <cstring>
 #include <netdb.h>
 #include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include "UDPsocket.h"
 
 unsigned int UDPsocket::resolveHostName(const char* const HostName){ // Resolving the host name to the IP.
 	hostent *host = gethostbyname(HostName);
-	if (host == NULL) throw("Cannot Resolve Host");
+    if (host == nullptr) return inet_addr(HostName);
 	return ntohl(*(unsigned int *)host->h_addr);
 }
 
