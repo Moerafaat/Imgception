@@ -24,7 +24,8 @@ SOURCES += src/main.cpp \
     src/key.cpp \
     src/globals.cpp \
     src/Views.cpp \
-    src/UDPsocket.cpp
+    src/UDPsocket.cpp \
+    src/Steganifier.cpp
 
 HEADERS  += include/application.h \
     include/image.h \
@@ -37,11 +38,14 @@ HEADERS  += include/application.h \
     include/key.h \
     include/globals.h \
     include/Views.h \
-    include/UDPsocket.h
-INCLUDEPATH += include/
+    include/UDPsocket.h \
+    include/Steganifier.h
+
+INCLUDEPATH += include/ \
+    /usr/include/python2.7
 
 FORMS    += application.ui
 
 CONFIG += c++11
 
-LIBS += -pthread -lssl -lcrypto
+LIBS += -pthread -lssl -lcrypto -lpython2.7
