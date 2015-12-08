@@ -274,7 +274,7 @@ void WorkerView::deploy(const unsigned int ip, const unsigned short port, const 
 	initMsg = msg;
 	if(pthread_mutex_unlock(&available)) throw("Unable to unlock mutex");
 }
-bool WorkerView::sendObject(const transmittable * const obj, const unsigned int nTries){
+bool WorkerView::sendObject(const Transmittable * const obj, const unsigned int nTries){
     char *buf;
     unsigned int size;
     buf = obj->serialize(size);
@@ -317,7 +317,7 @@ bool WorkerView::sendObject(const transmittable * const obj, const unsigned int 
     }
     return true;
 }
-bool WorkerView::recieveObject(transmittable * const obj, const unsigned int nTries){
+bool WorkerView::recieveObject(Transmittable * const obj, const unsigned int nTries){
     char *buf;
     unsigned int size;
 
@@ -416,7 +416,7 @@ bool ClientView::connect(const ServerMessage& msg, const int timeout){
 void ClientView::disconnect(){
 	client_socket.releasePeer(server_ip, server_port);
 }
-bool ClientView::sendObject(const transmittable * const obj, const unsigned int nTries){
+bool ClientView::sendObject(const Transmittable * const obj, const unsigned int nTries){
     char *buf;
     unsigned int size;
     buf = obj->serialize(size);
@@ -459,7 +459,7 @@ bool ClientView::sendObject(const transmittable * const obj, const unsigned int 
     }
     return true;
 }
-bool ClientView::recieveObject(transmittable * const obj, const unsigned int nTries){
+bool ClientView::recieveObject(Transmittable * const obj, const unsigned int nTries){
     char *buf;
     unsigned int size;
 

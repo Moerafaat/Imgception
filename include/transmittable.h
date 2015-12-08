@@ -4,10 +4,10 @@
 // Will be inherited: To use serialization.
 class Transmittable{
 public:
-    transmittable() = default;
-    transmittable(const transmittable&) = default;
-    transmittable(transmittable&&) = default;
-    ~transmittable() = default;
+    Transmittable() = default;
+    Transmittable(const Transmittable&) = default;
+    Transmittable(Transmittable&&) = default;
+    ~Transmittable() = default;
 
     virtual char *serialize(unsigned int&) const = 0;
     virtual bool deserialize(const char * const, const unsigned int) = 0;

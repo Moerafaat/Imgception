@@ -6,7 +6,7 @@
 #include "UDPsocket.h"
 
 class WorkerView;
-class transmittable;
+class Transmittable;
 
 class ServerMessage{
     //I didn't put it in message.h because it is not part of the middleware library (Should explain in personal)
@@ -84,8 +84,8 @@ public:
 	~WorkerView();
 
 	void deploy(const unsigned int, const unsigned short, const ServerMessage&); //API to deploy thread with IP:Port
-    bool sendObject(const transmittable * const, const unsigned int = 5);
-    bool recieveObject(transmittable * const, const unsigned int = 5);
+    bool sendObject(const Transmittable * const, const unsigned int = 5);
+    bool recieveObject(Transmittable * const, const unsigned int = 5);
 };
 
 class ClientView{
@@ -102,7 +102,7 @@ public:
 
 	bool connect(const ServerMessage&, const int = -1); //0 timeout = don't wait for worker
 	void disconnect();
-    bool sendObject(const transmittable * const, const unsigned int = 5);
-    bool recieveObject(transmittable * const, const unsigned int = 5);
+    bool sendObject(const Transmittable * const, const unsigned int = 5);
+    bool recieveObject(Transmittable * const, const unsigned int = 5);
  };
 #endif
