@@ -10,9 +10,9 @@ class FragmentDrive{
     FragmentDrive(FragmentDrive&&) = delete;
 public:
     static const unsigned int MaxTransmittableSize = 1 << 30;
-    static const unsigned short MaxFragmentSize = 2;  //Probably much higher
+    static const unsigned short MaxFragmentSize = 2048;  //Probably much higher
     static const unsigned int MaxFragmentCount = MaxTransmittableSize / MaxFragmentSize;
-    static const unsigned short BatchCount = 2;  //Not sure what is a suitable number.
+    static const unsigned short BatchCount = 10;  //Not sure what is a suitable number.
 private:
     static unsigned int nextID;
 public:
@@ -146,7 +146,7 @@ bool ServerMessage::deserialize(const char * const buf, const int sz){
     payload = nullptr;
     if(size + 9 != sz) return false;
     if(size > FragmentDrive::MaxFragmentSize) return false;
-    if(size != 0) (payload = new char[size], buf+9, size);
+    if(size != 0) memcpy(payload = new char[size], buf+9, size);
     return true;
 }
 
@@ -364,6 +364,13 @@ bool WorkerView::recieveObject(Transmittable * const obj, const unsigned int nTr
     }
     delete [] serial;
     return true;
+}
+
+unsigned int WorkerView::getPeerIP() const{
+    return worker_socket.getPeerIP();
+}
+unsigned short WorkerView::getPeerPort() const{
+    return worker_socket.getPeerPort();
 }
 
 //ClientView

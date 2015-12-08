@@ -12,6 +12,7 @@ public:
     onlinePeers();
     ~onlinePeers() = default;
 
+    bool pushPeer(QString, const unsigned int, const unsigned short);
     bool pushPeer(Key&, const unsigned int, const unsigned short);
     unsigned int getPeerCount() const;
     Key getPeerKey(unsigned int) const;

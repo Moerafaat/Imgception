@@ -8,11 +8,10 @@
 #include "ui_application.h"
 #include "key.h"
 #include "globals.h"
-
-const QString Application::application_root = "/Imgception";
+#include "onlinepeers.h"
 
 Application::Application(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::Application){
+    : QMainWindow(parent), ui(new Ui::Application), Client("localhost", 5000){
     ui->setupUi(this);
 
     // Creating core application folders.
@@ -62,8 +61,9 @@ bool Application::login(bool offline_mode){
         info_stream >> my_name;
         info_stream >> next_image_ID;
 
-        if(!my_public_key.readFromFile(pub_key_path, true) || !my_private_key.readFromFile(pri_key_path, true)){
+        if(!my_public_key.readFromFile(pub_key_path) || !my_private_key.readFromFile(pri_key_path, true)){
             logMessage("Unable to log in. Error reading keys.");
+            return false;
         }
 
        /*QTextStream owner_images_stream(&owner_images_file);
@@ -150,8 +150,25 @@ void Application::logout(){
 }
 
 // Stub entry.
-void Application::updatePeers(){
+bool Application::updatePeers(){
+    ServerMessage msg(0x01);
+    qDebug() << my_public_key.getAsString();
+    msg.setPayload(my_public_key.getAsString().toStdString().c_str(), my_public_key.getAsString().size());
+    if(!Client.connect(msg)){
+        logMessage("Unable to connect to worker.");
+        return false;
+    }
 
+    onlinePeers online;
+    if(!Client.recieveObject(&online)){
+        logMessage("Unable to recieve object");
+        return false;
+    }
+    qDebug() << "I got something." << endl;
+    qDebug() << online.getPeerCount();
+    qDebug() << online.getPeerKey(0).getAsString();
+    Client.disconnect(); // Disconnect from worker.
+    return true;
 }
 
 // Stub entry.
@@ -232,7 +249,7 @@ void Application::on_btn_new_image_clicked(){
 }
 
 void Application::on_btn_refresh_clicked(){
-
+    updatePeers();
 }
 
 void Application::on_btn_edit_clicked(){

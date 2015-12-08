@@ -5,6 +5,7 @@
 #include <QString>
 #include <QImage>
 #include "transmittable.h"
+#include "key.h"
 
 class Image : public Transmittable{
 public:
@@ -22,7 +23,7 @@ public:
     QImage getImage(); // Local invocation. Return image for Display (Open the file and Decode Steganography).
 
     int ID; // Image identifier.
-    int owner_key; // Image owner.
+    Key owner_key; // Image owner.
     QString path; // Path to image.
     QString image_name; // Image name.
 

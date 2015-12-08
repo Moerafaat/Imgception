@@ -20,10 +20,7 @@ bool Key::generate(Key& PubKey, Key& PriKey){
     PriKey.is_private = true;
 
     PubKey.is_ready = false;
-    if(!PubKey.readFromFile(FilePath)) return false;
-    PubKey.is_ready = true;
-
-    return true;
+    return PubKey.readFromFile(FilePath);
 }
 
 Key::Key(){
@@ -34,7 +31,6 @@ Key::Key(QString FilePath, bool IsPrivate){
     is_ready = false;
     if(!readFromFile(FilePath, IsPrivate))
         throw("Unable to read key.");
-    is_ready = true;
 }
 
 Key& Key::operator=(const Key& cpy){
@@ -97,10 +93,11 @@ bool Key::readFromFile(QString FilePath, bool IsPrivate){
     if(temp == nullptr) return false;
     key = *temp;
     delete [] temp;
-    return temp;
+    is_ready = true;
+    return true;
 }
 
-bool Key::writeToFile(QString FilePath){
+bool Key::writeToFile(QString FilePath) const{
     if(!is_ready) return false;
     int ret_code;
     FILE* file = fopen(FilePath.toStdString().c_str(), "w");
@@ -113,7 +110,7 @@ bool Key::writeToFile(QString FilePath){
     return ret_code;
 }
 
-QString Key::getAsString(){
+QString Key::getAsString() const{
     if(!is_ready || !writeToFile(Globals::TempFolderPath + "key")) return "";
     QFile file(Globals::TempFolderPath + "key");
     if(!file.open(QIODevice::ReadOnly)) return "";
@@ -127,7 +124,6 @@ bool Key::setFromString(QString str, bool IsPrivate){
     stream << str;
     file.close();
     readFromFile(Globals::TempFolderPath + "key", IsPrivate);
-    is_ready = true;
     return true;
 }
 

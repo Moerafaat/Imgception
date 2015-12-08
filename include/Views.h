@@ -86,6 +86,9 @@ public:
 	void deploy(const unsigned int, const unsigned short, const ServerMessage&); //API to deploy thread with IP:Port
     bool sendObject(const Transmittable * const, const unsigned int = 5);
     bool recieveObject(Transmittable * const, const unsigned int = 5);
+
+    unsigned int getPeerIP() const;
+    unsigned short getPeerPort() const;
 };
 
 class ClientView{

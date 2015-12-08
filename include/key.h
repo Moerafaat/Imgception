@@ -18,9 +18,9 @@ public:
     unsigned char * encrypt(const unsigned char *, const unsigned int, unsigned int&);
     unsigned char * decrypt(const unsigned char *, const unsigned int, unsigned int&);
     bool readFromFile(QString, bool=false);
-    bool writeToFile(QString);
+    bool writeToFile(QString) const;
 
-    QString getAsString();
+    QString getAsString() const;
     bool setFromString(QString, bool=false);
 
     bool isPublic();
@@ -29,7 +29,7 @@ public:
 public:
     static const unsigned int PubKeySize;
 private:
-    RSA key;
+    mutable RSA key;
     bool is_private;
     bool is_ready;
 };

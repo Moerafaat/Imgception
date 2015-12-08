@@ -4,6 +4,13 @@ onlinePeers::onlinePeers() : nPeers(0), peerKey(0), peerIP(0), peerPort(0){
 
 }
 
+bool onlinePeers::pushPeer(QString key, const unsigned int ip, const unsigned short port){
+    nPeers++;
+    peerKey.push_back(key);
+    peerIP.push_back(ip);
+    peerPort.push_back(port);
+    return true;
+}
 bool onlinePeers::pushPeer(Key& key, const unsigned int ip, const unsigned short port){
     if(key.isPrivate()) return false;
     nPeers++;

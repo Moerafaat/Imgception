@@ -11,6 +11,7 @@
 #include "peer.h"
 #include "update.h"
 #include "key.h"
+#include "Views.h"
 
 using namespace std;
 
@@ -48,7 +49,7 @@ private:
     bool signUp(QString); // Local invocation.
     void logout(); // Stub entry needed.
 
-    void updatePeers(); // Stub entry needed.
+    bool updatePeers(); // Stub entry needed.
     pair< vector<Image>, vector<Update> > getNotifications(); // Stub entry needed (store the images first in case an update follows it).
 
     QVector<Image> getAllImages(); // Local invocation.
@@ -65,8 +66,7 @@ private:
 private:
     Ui::Application *ui;
 
-    static const QString application_root;
-
+    ClientView Client; // Client View for communication as client.
 
     Key my_public_key; // Fetch from pubkey file.
     Key my_private_key; // Fetch from prikey file.

@@ -1,14 +1,17 @@
+#include <QDebug>
 #include <iostream>
 #include "Views.h"
 #include "onlinepeers.h"
-//#include
 using namespace std;
 
-onlinePeers online;
+onlinePeers online_list;
 
 
 void retPeerList(WorkerView& Worker, const ServerMessage& initMsg){
-
+    qDebug() << "I am fucking here bitches!";
+    QString key = QString::fromStdString(string(initMsg.getPayload(), initMsg.getPayloadSize()));
+    online_list.pushPeer(key, Worker.getPeerIP(), Worker.getPeerPort());
+    Worker.sendObject(&online_list);
 }
 
 int main(){
