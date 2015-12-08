@@ -12,7 +12,6 @@
 Application::Application(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::Application), Client("localhost", 5000){
     ui->setupUi(this);
-
     // Creating core application folders.
     Globals::InitFolders();
 }

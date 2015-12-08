@@ -1,11 +1,12 @@
 #include <QFile>
 #include <QTextStream>
 #include <QString>
+#include <QDir>
 #include <cstring>
 #include "image.h"
 #include "globals.h"
 
-Steganifier Image::s(QString(Globals::ApplicationRoot),QString("Steganify"));
+Steganifier Image::s(QDir::homePath(),QString("Steganify"));
 
 Image::Image(int Id, Key OwnerKey, QString Path, QString Name, int UpCount, int ViewLimit):ID(Id),owner_key(OwnerKey),view_limit(-1),up_count(0),path(Path),image_name(Name)
 {
