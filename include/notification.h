@@ -10,7 +10,7 @@ public:
     Notification() = default;
     Notification(const Notification&) = default;
     Notification(Notification&&) = default;
-    Notification(Key, Key, char *, bool);
+    Notification(Key, Key);
     ~Notification() = default;
 
     void setPayload(const char*, const unsigned int, bool);

@@ -1,7 +1,7 @@
 #include "notification.h"
 
-Notification::Notification(Key SenderKey, Key ReceiverKey, char *Payload, bool PayloadType)
-    : sender_key(SenderKey), receiver_key(ReceiverKey), payload(Payload), payload_type(PayloadType){
+Notification::Notification(Key SenderKey, Key ReceiverKey)
+    : sender_key(SenderKey), receiver_key(ReceiverKey){
 }
 
 void Notification::setPayload(const char* Payload, const unsigned int Size, bool PayloadType){

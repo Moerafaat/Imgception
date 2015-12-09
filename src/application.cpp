@@ -8,6 +8,8 @@
 #include "key.h"
 #include "globals.h"
 #include "onlinepeers.h"
+#include "notification.h"
+#include "notificationheader.h"
 
 Application *my_app;
 void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
@@ -32,7 +34,21 @@ void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
         qDebug() << QString::fromStdString(std::string(err));
     }*/
     try{
+        Notification notification;
+        qDebug() << "Worker is deployed.";
+        if(!Worker.recieveObject(&notification)){
+            qDebug() << "Unable to receive Notification.";
+            return;
+        }
+        qDebug() << notification.sender_key.getAsString();
+        qDebug() << notification.receiver_key.getAsString();
+        qDebug() << notification.payload_size << " " << notification.payload_type;
 
+        Image img;
+        if(img.deserialize(notification.payload, notification.payload_size)){
+            qDebug() << "Unable to deserialize.";
+        }
+        my_app->ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
     }catch(const char* err){
         qDebug() << QString::fromStdString(std::string(err));
     }
@@ -177,13 +193,15 @@ void Application::logout(){
     ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
     ClientView tClient("10.40.55.97", 4000);
 
-    Update img_update(my_public_key, 0, 5, false);
-
-    if(!tClient.connect(ServerMessage(P2P_UPDATE_IMAGE), 1000)){
+    Notification notification(my_public_key, my_public_key);
+    unsigned int size;
+    char* buf = img.serialize(size);
+    notification.setPayload(buf, size, false);
+    if(!tClient.connect(ServerMessage(P2S_NOTIFICATION), 1000)){
         logMessage("Unable to connect to worker");
         return;
     }
-    if(!tClient.sendObject(&img_update)){
+    if(!tClient.sendObject(&notification)){
         logMessage("Unable to send picutre");
         return;
     }
