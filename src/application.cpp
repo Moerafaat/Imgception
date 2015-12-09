@@ -12,6 +12,8 @@ Application *my_app;
 void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
     Image img;
     qDebug() << "Worker is deployed";
+    qDebug() << Worker.getPeerIP() << " " << Worker.getPeerPort();
+    qDebug() << initMsg.getVector();
     if(!Worker.recieveObject(&img)){
         qDebug() << "Unable to receive Image.";
         return;
