@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QImage>
+#include <QFileInfo>
 #include "Steganifier.h"
 
 namespace Ui {
