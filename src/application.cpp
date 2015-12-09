@@ -19,15 +19,23 @@ void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
     }
     my_app->ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
     qDebug() << "Worker is Exisiting";*/
+    /*try{
+        Update img_update;
+        qDebug() << "Worker is deployed.";
+        if(!Worker.recieveObject(&img_update)){
+            qDebug() << "Unable to receive Update.";
+            return;
+        }
+        qDebug() << img_update.owner_key.getAsString();
+        qDebug() << img_update.image_key << " " << img_update.new_limit << " " << img_update.new_start;
+    }catch(const char* err){
+        qDebug() << QString::fromStdString(std::string(err));
+    }*/
+    try{
 
-    Update img_update;
-    qDebug() << "Worker is deployed.";
-    if(!Worker.recieveObject(&img_update)){
-        qDebug() << "Unable to receive Update.";
-        return;
+    }catch(const char* err){
+        qDebug() << QString::fromStdString(std::string(err));
     }
-    qDebug() << img_update.owner_key.getAsString();
-    qDebug() << img_update.image_key << " " << img_update.new_limit << " " << img_update.new_start;
 }
 
 Application::Application(QWidget *parent)

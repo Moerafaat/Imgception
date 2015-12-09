@@ -12,12 +12,14 @@ char* Update::serialize(unsigned int & Size) const{
     *(unsigned int*)(serial + Key::PubKeySize) = HostToNetwork(image_key);
     *(unsigned int*)(serial + Key::PubKeySize + 4) = HostToNetwork(new_limit);
     *(serial + Key::PubKeySize + 4 + 4) = new_start;
+    return serial;
 }
 
 bool Update::deserialize(const char* const SerializedUpdate, const unsigned int Size){
     if(Size != Key::PubKeySize + 4 + 4 + 1) return false;
-    owner_key = QString::fromStdString(std::string(SerializedUpdate, Key::PubKeySize));
+    owner_key.setFromString(QString::fromStdString(std::string(SerializedUpdate, Key::PubKeySize)));
     image_key = NetworkToHost(*(unsigned int*)(SerializedUpdate + Key::PubKeySize));
     new_limit = NetworkToHost(*(unsigned int*)(SerializedUpdate + Key::PubKeySize + 4));
     new_start = *(SerializedUpdate + Key::PubKeySize + 4 + 4);
+    return true;
 }

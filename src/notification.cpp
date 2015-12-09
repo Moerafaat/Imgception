@@ -4,6 +4,12 @@ Notification::Notification(Key SenderKey, Key ReceiverKey, char *Payload, bool P
     : sender_key(SenderKey), receiver_key(ReceiverKey), payload(Payload), payload_type(PayloadType){
 }
 
+void Notification::setPayload(const char* Payload, const unsigned int Size, bool PayloadType){
+    memcpy(payload, Payload, Size);
+    payload_type = PayloadType;
+    payload_size = Size;
+}
+
 char* Notification::serialize(unsigned int & Size) const{
     Size = Key::PubKeySize + Key::PubKeySize + payload_size + payload_size + 1 + 4;
     char *serial = new char[Size];
@@ -23,5 +29,6 @@ bool Notification::deserialize(const char* const SerializedNotification, const u
     payload = new char[payload_size];
     memcpy(payload, SerializedNotification + Key::PubKeySize + Key::PubKeySize + 4, payload_size);
     payload_type = *(SerializedNotification + Key::PubKeySize + Key::PubKeySize + 4 + payload_size);
+    return true;
 }
 

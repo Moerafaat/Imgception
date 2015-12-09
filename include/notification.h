@@ -22,7 +22,6 @@ public:
     Key receiver_key; // Notification receiver.
     unsigned int payload_size;
     char*payload; // Send either image or update.
-    int payloadSize; //
     bool payload_type; // 0 means image, 1 means update.
 };
 
