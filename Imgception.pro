@@ -19,7 +19,6 @@ SOURCES += src/main_client.cpp \
     src/peer.cpp \
     src/update.cpp \
     src/notification.cpp \
-    src/notificationheader.cpp \
     src/key.cpp \
     src/globals.cpp \
     src/Views.cpp \
@@ -35,7 +34,6 @@ HEADERS  += include/application.h \
     include/peer.h \
     include/update.h \
     include/notification.h \
-    include/notificationheader.h \
     include/key.h \
     include/globals.h \
     include/Views.h \

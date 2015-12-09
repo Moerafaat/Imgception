@@ -9,7 +9,6 @@
 #include "globals.h"
 #include "onlinepeers.h"
 #include "notification.h"
-#include "notificationheader.h"
 
 Application *my_app;
 void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
@@ -53,17 +52,6 @@ void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
     }catch(const char* err){
         qDebug() << QString::fromStdString(std::string(err));
     }*/
-    try{
-        NotificationHeader NH;
-        qDebug() << "Worker is deployed.";
-        if(!Worker.recieveObject(&NH)){
-            qDebug() << "Unable to receive Notification Header.";
-            return;
-        }
-        qDebug() << NH.number_of_notifications;
-    }catch(const char* err){
-        qDebug() << QString::fromStdString(std::string(err));
-    }
 }
 
 Application::Application(QWidget *parent)
@@ -205,12 +193,15 @@ void Application::logout(){
     ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
     ClientView tClient("10.40.55.97", 4000);
 
-    NotificationHeader NH(5);
+    Notification notification(my_public_key, my_public_key);
+    unsigned int size;
+    char* buf = img.serialize(size);
+    notification.setPayload(buf, size, false);
     if(!tClient.connect(ServerMessage(P2S_NOTIFICATION), 1000)){
         logMessage("Unable to connect to worker");
         return;
     }
-    if(!tClient.sendObject(&NH)){
+    if(!tClient.sendObject(&notification)){
         logMessage("Unable to send picutre");
         return;
     }
