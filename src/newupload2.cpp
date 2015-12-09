@@ -1,5 +1,6 @@
 #include "newupload2.h"
 #include "ui_newupload2.h"
+#include<QMessageBox>
 
 NewUpload2::NewUpload2(QWidget *parent) :
     QDialog(parent),
@@ -64,8 +65,14 @@ void NewUpload2::on_saveButton_clicked()
 {
         //script path, the full path of the file Steganify.py
         //script name, Steganify (with no .py)
-
-        QPixmap pix = QPixmap::fromImage(stgna->Steganify(ui->fakeImage_lineEdit->text(),ui->OriginalImage_lineEdit->text()));
-        pix = pix.scaled(ui->Orignial_viewer->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        ui->Orignial_viewer->setPixmap(pix);
+        QFile* fakeImage_file = new QFile(ui->fakeImage_lineEdit->text());
+        QFile* OriginalImage_file = new QFile(ui->OriginalImage_lineEdit->text());
+        if(fakeImage_file->size()/OriginalImage_file->size() > 3)
+        {
+            QPixmap pix = QPixmap::fromImage(stgna->Steganify(ui->fakeImage_lineEdit->text(),ui->OriginalImage_lineEdit->text()));
+            pix = pix.scaled(ui->Orignial_viewer->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            ui->Orignial_viewer->setPixmap(pix);
+        }
+        else
+            QMessageBox::critical(this, "Sizes Don't match","Fake Image is 3x byte size or more of Original Image ");
 }
