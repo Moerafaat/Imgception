@@ -25,10 +25,13 @@ public:
     static const QString TempFolderPath;
 
     static void InitFolders();
+    static void Exit();
 
     static bool login(bool); // Stub entry.
     static bool signUp(QString); // Local invocation.
     static bool updatePeers(); // Stub entry.
+
+    static QStringList GetPeerNames();
 
     static ServerView Server;
     static ClientView Client;

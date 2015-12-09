@@ -1,0 +1,50 @@
+<RCC>
+    <qresource prefix="/APPICONS">
+        <file>icons/686922-monitor_display-128.png</file>
+        <file>icons/686922-monitor_display-512.png</file>
+        <file>icons/686932-signin_login_enter_entry_sign_log_in-512.png</file>
+        <file>icons/Add User Filled-25.png</file>
+        <file>icons/Add User-24 (1).png</file>
+        <file>icons/Add User-24.png</file>
+        <file>icons/Add User-25.png</file>
+        <file>icons/Add User-26 (1).png</file>
+        <file>icons/Add User-26.png</file>
+        <file>icons/Add User-100.png</file>
+        <file>icons/Caution-128.png</file>
+        <file>icons/check-in-512.png</file>
+        <file>icons/Enter-24.png</file>
+        <file>icons/exit_delete_close_remove_door-128.png</file>
+        <file>icons/eye_in_a_sky.png</file>
+        <file>icons/Gmail Login-24.png</file>
+        <file>icons/Key-24.png</file>
+        <file>icons/Login-128.png</file>
+        <file>icons/Sign_Up-128.png</file>
+        <file>icons/Network-Globe-Connected-icon.png</file>
+        <file>icons/Network-Globe-Disconnected-icon.png</file>
+        <file>icons/sd-icon.png</file>
+        <file>icons/hd-icon.png</file>
+        <file>icons/user_status-128.png</file>
+        <file>icons/account_card-128.png</file>
+        <file>icons/globe-128 (1).png</file>
+        <file>icons/globe-128.png</file>
+        <file>icons/online_world_earth_globe-128.png</file>
+        <file>icons/security_fail-128.png</file>
+        <file>icons/user_forbidden-128.png</file>
+        <file>icons/user_valid-128.png</file>
+        <file>icons/valid_shield-128.png</file>
+        <file>icons/world_wide_globe_online_business_web-128.png</file>
+        <file>icons/1449434333_circle-world-global-internet-earth-glyph.png</file>
+        <file>icons/1449436238_free-17.png</file>
+    </qresource>
+    <qresource prefix="/APPImages">
+        <file>Images/Iron-Man-The-Avengers-2012.jpg</file>
+        <file>Images/11126921_10153134401805295_408836533708166894_o.jpg</file>
+        <file>Images/amazing_sky_2-wallpaper-2880x1620.jpg</file>
+        <file>Images/captain_america_civil_war-wallpaper-1920x1080.jpg</file>
+        <file>Images/testing image set 1/captain-america-holding-his-shield-39604.jpg</file>
+        <file>Images/testing image set 1/Megan_Fox_Wallpaper_1080_by_b0un-1360x768.png</file>
+    </qresource>
+    <qresource prefix="/Python">
+        <file>Steganify.py</file>
+    </qresource>
+</RCC>

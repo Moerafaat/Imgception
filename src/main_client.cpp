@@ -1,16 +1,14 @@
 #include <iostream>
 #include <QApplication>
+#include "mainwindow.h"
+#include "peerprogram.h"
 
 using namespace std;
 
 int main(int argc, char *argv[]){
-    try{
-        //QApplication a(argc, argv);
-        //Application w;
-        //w.show();
-        //return a.exec();
-    }catch(const char *str){
-        cout << str << endl;
-    }
-    return 0;
+    PeerProgram::InitFolders();
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
 }

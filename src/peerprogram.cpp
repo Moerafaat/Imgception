@@ -18,6 +18,12 @@ void PeerProgram::InitFolders(){
     if(!tDir.exists()) tDir.mkpath(".");
 }
 
+void PeerProgram::Exit(){
+    //Save Data structure?
+    Server.cleanExit();
+    PU.Exit();
+}
+
 // Stub entry.
 bool PeerProgram::login(bool offline_mode){
     QString info_path = MeFolderPath + "info.txt";
@@ -153,11 +159,18 @@ bool PeerProgram::updatePeers(){
     return true;
 }
 
+QStringList PeerProgram::GetPeerNames(){
+    QStringList lst;
+    lst.push_back("ABC");
+    lst.push_back("ABC1");
+    lst.push_back("ABC2");
+    return lst;
+}
 
 ServerView PeerProgram::Server(4000);
 ClientView PeerProgram::Client("10.40.55.97", 5000);
-//PeriodicUpdate PeerProgram::PU(10);
-//ServerThread PeerProgram::ST;
+PeriodicUpdate PeerProgram::PU(10);
+ServerThread PeerProgram::ST;
 
 Key PeerProgram::my_public_key; // Fetch from pubkey file.
 Key PeerProgram::my_private_key; // Fetch from prikey file.

@@ -5,6 +5,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "UDPsocket.h"
+#include <iostream>
+using namespace std;
 
 unsigned int UDPsocket::resolveHostName(const char* const HostName){ // Resolving the host name to the IP.
 	hostent *host = gethostbyname(HostName);
@@ -13,7 +15,7 @@ unsigned int UDPsocket::resolveHostName(const char* const HostName){ // Resolvin
 }
 
 UDPsocket::UDPsocket(): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){ // Construct a socket with random.
-	if(sock == -1) throw("Error Creating Socket");
+    if(sock == -1) throw("Error Creating Socket");
     FD_ZERO(&socket_set);
     FD_SET(sock, &socket_set);
 
@@ -29,7 +31,7 @@ UDPsocket::UDPsocket(): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK
 	if(getsockname(sock, (sockaddr *)&my_addr, &sin_size) == -1) throw("Error Getting Sockname"); // Get own IP and Port.
 }
 UDPsocket::UDPsocket(const short my_port): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){ // Constuct a socket with a specific port.
-	if(sock == -1) throw("Error Creating Socket");
+    if(sock == -1) throw("Error Creating Socket");
 	setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,(void *)1,sizeof(1));
     FD_ZERO(&socket_set);
     FD_SET(sock, &socket_set);
@@ -45,7 +47,7 @@ UDPsocket::UDPsocket(const short my_port): sin_size(sizeof(sockaddr_in)), sock(s
 	if (bind(sock, (sockaddr *)&my_addr, sizeof(sockaddr)) == -1) throw("Error Binding");
 }
 UDPsocket::UDPsocket(const unsigned int IP, const short pport): sin_size(sizeof(sockaddr_in)), sock(socket(AF_INET, SOCK_DGRAM, 0)){
-	if(sock == -1) throw("Error Creating Socket");
+    if(sock == -1) throw("Error Creating Socket");
     FD_ZERO(&socket_set);
     FD_SET(sock, &socket_set);
 

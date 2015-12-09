@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Imgception
 TEMPLATE = app
 
-
 SOURCES += src/main_client.cpp \
     src/image.cpp \
     src/transmittable.cpp \
@@ -25,7 +24,10 @@ SOURCES += src/main_client.cpp \
     src/Steganifier.cpp \
     src/PeriodicUpdate.cpp \
     src/serverthread.cpp \
-    src/peerprogram.cpp
+    src/peerprogram.cpp \
+    src/dialog.cpp \
+    src/mainwindow.cpp \
+    src/uploadwindow.cpp
 
 HEADERS  += include/image.h \
     include/transmittable.h \
@@ -39,14 +41,22 @@ HEADERS  += include/image.h \
     include/Steganifier.h \
     include/PeriodicUpdate.h \
     include/serverthread.h \
-    include/peerprogram.h
+    include/peerprogram.h \
+    include/dialog.h \
+    include/uploadwindow.h \
+    include/mainwindow.h
 
 INCLUDEPATH += include/ \
     /usr/include/python2.7 \
     include/
 
-FORMS    += application.ui
+FORMS    += dialog.ui \
+    mainwindow.ui \
+    uploadwindow.ui
 
 CONFIG += c++11
 
 LIBS += -pthread -lssl -lcrypto -lpython2.7
+
+RESOURCES += \
+    myApp.qrc
