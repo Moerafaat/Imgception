@@ -56,41 +56,38 @@ bool PeerProgram::login(bool offline_mode){
             return false;
         }
 
-        /*QString peer_name;
-        QString key_string;
+        QTextStream owner_images_stream(&owner_images_file);
+        int nImg; owner_images_stream >> nImg;
+        for(int i = 0; i < nImg; i++){
+            int imgID; owner_images_stream >> imgID;
+            QString imgName; owner_images_stream >> imgName;
+            int nShares; owner_images_stream >> nShares;
+            own_images.push_back(Image(imgID, my_public_key, PeerProgram::MeFolderPath + QString::number(imgID) + ".png", imgName, 0, -1));
+            authorized_peers.push_back(QMap<QString, int>());
+            for(int j = 0; j < nShares; j++){
+                owner_images_stream.skipWhiteSpace();
+                QString peer_key = owner_images_file.read(Key::PubKeySize);
+                int vlimit; owner_images_stream >> vlimit;
+                authorized_peers.back()[peer_key] = vlimit;
+            }
+        }
+
+        QString peer_name;
+        Key key;
         QDir application_directory(PeerProgram::ApplicationRoot);
         QFileInfoList folder_info_list = application_directory.entryInfoList();
         QStringList folder_name_list = application_directory.entryList();
         for(int i=0; i<folder_info_list.size(); i++){
             if(!folder_info_list[i].isDir() || folder_name_list[i] == "me" || folder_name_list[i] == ".temp") continue; // Not a directory, me, or temp.
             peer_name = folder_name_list[i];
-            QSting peer_key_path(PeerProgram::ApplicationRoot + peer_name + "/pubkey");
-            QFile peer_key_file(peer_key_path);
-            if(!peer_key_file.open(QIODevice::ReadOnly)){
-                qDebug() << "Unable to open peer key file.";
-                return false;
-            }
+            QString peer_key_path(PeerProgram::ApplicationRoot + peer_name + "/pubkey");
+            key.readFromFile(peer_key_path);
 
-        }*/
-
-       /*QTextStream owner_images_stream(&owner_images_file);
-        int i = 0;
-        while(!owner_images_stream.atEnd()){
-            QString line = owner_images_stream.readLine();
-            QStringList image_info = line.split(" ");
-            int image_ID = image_info.at(0).toInt();
-            int owner_key =image_info.at(1).toInt();
-            QString path = image_info.at(2);
-            QString image_name = image_info.at(3);
-            int up_count = image_info.at(4).toInt();
-            int view_limit = image_info.at(5).toInt();
-            Image image(image_ID, owner_key, path, image_name, up_count, view_limit); // TODO: owner_key.
-            my_images.push_back(image); // Insert image into vector of owner images.
-            image_key_to_index[image_ID] = i;
-            i++;
+            peer_list.push_back(Peer(key, peer_name, false, -1, -1));
+            peer_key_to_index.insert(key.getAsString(), peer_list.size() - 1);
         }
 
-        if(offline_mode){ // Fetch images from the local database.
+        /*if(offline_mode){ // Fetch images from the local database.
 
         }
         else{ // Fetch images remotely + local database.
@@ -179,11 +176,11 @@ bool PeerProgram::updatePeers(){
 
 // Local invocation.
 QStringList PeerProgram::GetPeerNames(){
-    QStringList peer_list;
-    peer_list.push_back("ABC");
-    peer_list.push_back("ABC1");
-    peer_list.push_back("ABC2");
-    return peer_list;
+    QStringList peerList;
+    peerList.push_back("ABC");
+    peerList.push_back("ABC1");
+    peerList.push_back("ABC2");
+    return peerList;
 }
 
 ServerView PeerProgram::Server(4000);
@@ -195,3 +192,9 @@ Key PeerProgram::my_public_key; // Fetch from pubkey file.
 Key PeerProgram::my_private_key; // Fetch from prikey file.
 QString PeerProgram::my_name; // Fetch from info file.
 int PeerProgram::next_image_ID; // Fetch from info file.
+
+QVector<Image> PeerProgram::own_images; // Own images from images file.
+QVector<Peer> PeerProgram::peer_list; // All peers (online or offline with previous interaction history.
+QVector< QMap<QString, int> > PeerProgram::authorized_peers; // Vector indexed by image to map of authorized peers and view limit.
+
+QMap<QString, int> PeerProgram::peer_key_to_index;

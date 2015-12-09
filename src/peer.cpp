@@ -1,8 +1,8 @@
 #include "peer.h"
 #include "key.h"
 
-Peer::Peer(QString Key, QString Name, bool IsOnline, unsigned int Ip, unsigned short Port){
-    key.setFromString(Key);
+Peer::Peer(Key K, QString Name, bool IsOnline, unsigned int Ip, unsigned short Port){
+    key = K;
     name = Name;
     online = IsOnline;
     IP = Ip;
@@ -10,5 +10,5 @@ Peer::Peer(QString Key, QString Name, bool IsOnline, unsigned int Ip, unsigned s
 }
 
 Image Peer::getImageByIndex(unsigned int idx){
-    return images[image_key_to_index[idx]];
+    return image_list[image_key_to_index[idx]];
 }

@@ -44,9 +44,11 @@ public:
     static QString my_name; // Fetch from info file.
     static int next_image_ID; // Fetch from info file.
 
-    QVector<Image> own_images; // Own images from images file.
-    QVector<Peer> peer; // All peers (online or offline with previous interaction history.
-    QVector< QMap<QString, int> > authorized_peers; // Vector indexed by image to map of authorized peers and view limit.
+    static QVector<Image> own_images; // Own images from images file.
+    static QVector<Peer> peer_list; // All peers (online or offline with previous interaction history.
+    static QVector< QMap<QString, int> > authorized_peers; // Vector indexed by image to map of authorized peers and view limit.
+
+    static QMap<QString, int> peer_key_to_index; // For fast access.
 };
 
 #endif // PEERPROGRAM_H
