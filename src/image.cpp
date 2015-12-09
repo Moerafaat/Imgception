@@ -6,7 +6,7 @@
 #include <cstring>
 #include <QByteArray>
 #include "image.h"
-#include "globals.h"
+#include "peerprogram.h"
 
 Steganifier Image::s(QDir::homePath(),QString("Steganify"));
 
@@ -69,7 +69,7 @@ bool Image::deserialize(const char* const SerializedImage, const unsigned int Si
     char * tempImageString = new char[imageStringSize];
     QByteArray bytearr(SerializedImage+16+image_name_size + 4, imageStringSize);
 
-    QFile file(path = Globals::TempFolderPath + "image.png");
+    QFile file(path = PeerProgram::TempFolderPath + "image.png");
     file.open(QIODevice::WriteOnly);
     file.write(bytearr);
     file.close();

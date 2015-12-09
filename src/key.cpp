@@ -3,13 +3,13 @@
 #include <openssl/pem.h>
 #include <QFile>
 #include "key.h"
-#include "globals.h"
+#include "peerprogram.h"
 using namespace std;
 
 const unsigned int Key::PubKeySize = 426;
 
 bool Key::generate(Key& PubKey, Key& PriKey){
-    const QString FilePath = Globals::TempFolderPath + "key";
+    const QString FilePath = PeerProgram::TempFolderPath + "key";
     RSA *temp = RSA_generate_key(2048, 3, nullptr, nullptr); // Generate the owner key.
     if(temp == nullptr) return false;
     PriKey.key = *temp;
@@ -111,19 +111,19 @@ bool Key::writeToFile(QString FilePath) const{
 }
 
 QString Key::getAsString() const{
-    if(!is_ready || !writeToFile(Globals::TempFolderPath + "key")) return "";
-    QFile file(Globals::TempFolderPath + "key");
+    if(!is_ready || !writeToFile(PeerProgram::TempFolderPath + "key")) return "";
+    QFile file(PeerProgram::TempFolderPath + "key");
     if(!file.open(QIODevice::ReadOnly)) return "";
     return QTextStream(&file).readAll();
 }
 
 bool Key::setFromString(QString str, bool IsPrivate){
-    QFile file(Globals::TempFolderPath + "key");
+    QFile file(PeerProgram::TempFolderPath + "key");
     if(!file.open(QIODevice::WriteOnly)) return false;
     QTextStream stream(&file);
     stream << str;
     file.close();
-    return readFromFile(Globals::TempFolderPath + "key", IsPrivate);
+    return readFromFile(PeerProgram::TempFolderPath + "key", IsPrivate);
 }
 
 bool Key::isPublic(){

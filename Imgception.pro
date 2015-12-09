@@ -13,35 +13,33 @@ TEMPLATE = app
 
 
 SOURCES += src/main_client.cpp \
-    src/application.cpp \
     src/image.cpp \
     src/transmittable.cpp \
     src/peer.cpp \
     src/update.cpp \
     src/notification.cpp \
     src/key.cpp \
-    src/globals.cpp \
     src/Views.cpp \
     src/UDPsocket.cpp \
     src/onlinepeers.cpp \
     src/Steganifier.cpp \
     src/PeriodicUpdate.cpp \
-    src/serverthread.cpp
+    src/serverthread.cpp \
+    src/peerprogram.cpp
 
-HEADERS  += include/application.h \
-    include/image.h \
+HEADERS  += include/image.h \
     include/transmittable.h \
     include/peer.h \
     include/update.h \
     include/notification.h \
     include/key.h \
-    include/globals.h \
     include/Views.h \
     include/UDPsocket.h \
     include/onlinepeers.h \
     include/Steganifier.h \
     include/PeriodicUpdate.h \
-    include/serverthread.h
+    include/serverthread.h \
+    include/peerprogram.h
 
 INCLUDEPATH += include/ \
     /usr/include/python2.7 \

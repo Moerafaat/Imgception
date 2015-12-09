@@ -1,8 +1,8 @@
 #include "PeriodicUpdate.h"
-#include "application.h"
+#include "peerprogram.h"
 #include <QDebug>
 
-PeriodicUpdate::PeriodicUpdate(Application *P, const int sec) : ptr(P), EXIT_FLAG(false), seconds(sec){
+PeriodicUpdate::PeriodicUpdate(const int sec) : EXIT_FLAG(false), seconds(sec){
 
 }
 
@@ -15,7 +15,7 @@ void PeriodicUpdate::run(){
     while(!EXIT_FLAG){
         QThread::setTerminationEnabled(false);
         if(mutex.tryLock()){
-            ptr->updatePeers();
+            PeerProgram::updatePeers();
             mutex.unlock();
         }
         QThread::setTerminationEnabled(true);
@@ -30,3 +30,4 @@ bool PeriodicUpdate::Lock(){
 void PeriodicUpdate::Unlock(){
     mutex.unlock();
 }
+ int x;
