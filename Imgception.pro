@@ -27,7 +27,7 @@ SOURCES += src/main_client.cpp \
     src/peerprogram.cpp \
     src/dialog.cpp \
     src/mainwindow.cpp \
-    src/uploadwindow.cpp
+    src/newupload2.cpp
 
 HEADERS  += include/image.h \
     include/transmittable.h \
@@ -43,8 +43,8 @@ HEADERS  += include/image.h \
     include/serverthread.h \
     include/peerprogram.h \
     include/dialog.h \
-    include/uploadwindow.h \
-    include/mainwindow.h
+    include/mainwindow.h \
+    include/newupload2.h
 
 INCLUDEPATH += include/ \
     /usr/include/python2.7 \
@@ -52,7 +52,7 @@ INCLUDEPATH += include/ \
 
 FORMS    += dialog.ui \
     mainwindow.ui \
-    uploadwindow.ui
+    newupload2.ui
 
 CONFIG += c++11
 

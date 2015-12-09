@@ -8,7 +8,7 @@
 #include <QtCore>
 #include<QtGui>
 #include<QTreeWidget>
-#include"uploadwindow.h"
+#include "newupload2.h"
 #include <QListWidgetItem>
 #include <QVector>
 #include <QString>
@@ -46,7 +46,7 @@ private slots:
 
 private:
     Ui::Dialog *ui;
-    uploadWindow *NewUploadWindow;
+    NewUpload2  *NewUploadWindow2;
     QStandardItemModel *model;
 
     int count =10;// dumy counter

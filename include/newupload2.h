@@ -1,5 +1,5 @@
-#ifndef UPLOADWINDOW_H
-#define UPLOADWINDOW_H
+#ifndef NEWUPLOAD2_H
+#define NEWUPLOAD2_H
 
 #include <QDialog>
 #include <QDebug>
@@ -8,31 +8,31 @@
 #include "Steganifier.h"
 
 namespace Ui {
-class uploadWindow;
+class NewUpload2;
 }
 
-class uploadWindow : public QDialog
+class NewUpload2 : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit uploadWindow(QWidget *parent = 0);
-    ~uploadWindow();
+    explicit NewUpload2(QWidget *parent = 0);
+    ~NewUpload2();
 
 private slots:
     void on_BrowseButton_fake_clicked();
-
-    void on_UploadButton_fake_clicked();
-
-    void on_saveButton_clicked();
 
     void on_BrowseButton_Original_clicked();
 
     void on_UploadButton_Original_clicked();
 
+    void on_UploadButton_fake_clicked();
+
+    void on_saveButton_clicked();
+
 private:
-    Ui::uploadWindow *ui;
+    Ui::NewUpload2 *ui;
     Steganifier *stgna;
 };
 
-#endif // UPLOADWINDOW_H
+#endif // NEWUPLOAD2_H

@@ -12,7 +12,6 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 #include "mainwindow.h"
-#include "ui_application.h"
 #include "key.h"
 #include "onlinepeers.h"
 
@@ -82,10 +81,10 @@ void Dialog::on_treeWidget_doubleClicked(const QModelIndex &index){
 }
 
 void Dialog::on_New_btn_clicked(){
-    NewUploadWindow = new uploadWindow(this);//NewUploadWindow();
-    NewUploadWindow->setModal(true);
-    NewUploadWindow->exec();
-    delete NewUploadWindow;
+        NewUploadWindow2 = new NewUpload2(this);
+        NewUploadWindow2->setModal(true);
+        NewUploadWindow2->exec();
+        delete NewUploadWindow2;
 }
 
 void Dialog::on_Edit_btn_clicked(){
