@@ -17,7 +17,7 @@ public:
 
     char *serialize(unsigned int &) const;
     bool deserialize(const char * const, const unsigned int);
-private:
+
     Key sender_key; // Notification sender.
     Key receiver_key; // Notification receiver.
     unsigned int payload_size;

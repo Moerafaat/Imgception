@@ -14,7 +14,7 @@ public:
 
     char *serialize(unsigned int &) const;
     bool deserialize(const char * const, const unsigned int);
-private:
+
     Key owner_key; // notification sender.
     unsigned int image_key; // image to be updated.
     unsigned int new_limit; // limit update.

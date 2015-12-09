@@ -8,24 +8,33 @@
 #include "key.h"
 #include "globals.h"
 #include "onlinepeers.h"
+
 Application *my_app;
 void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
-    Image img;
+    /*Image img;
     qDebug() << "Worker is deployed";
-    qDebug() << Worker.getPeerIP() << " " << Worker.getPeerPort();
-    qDebug() << initMsg.getVector();
     if(!Worker.recieveObject(&img)){
         qDebug() << "Unable to receive Image.";
         return;
     }
     my_app->ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
+    qDebug() << "Worker is Exisiting";*/
+
+    Update img_update;
+    qDebug() << "Worker is deployed.";
+    if(!Worker.recieveObject(&img_update)){
+        qDebug() << "Unable to receive Update.";
+        return;
+    }
+    qDebug() << img_update.owner_key.getAsString();
+    qDebug() << img_update.image_key << " " << img_update.new_limit << " " << img_update.new_start;
 }
 
 Application::Application(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::Application), Client("10.40.51.84", 5000), Server(4000), ST(this), PU(this, 10){
+    : QMainWindow(parent), ui(new Ui::Application), Client("10.40.55.97", 5000), Server(4000), ST(this), PU(this, 10){
     ui->setupUi(this);
     my_app = this;
-    Server.setCallbackFunc(0x02, GetImage);
+    Server.setCallbackFunc(P2P_UPDATE_IMAGE, GetImage);
     ST.start();
     // Creating core application folders.
     Globals::InitFolders();
@@ -158,13 +167,15 @@ bool Application::signUp(QString Username){
 void Application::logout(){
     Image img(0, my_public_key, Globals::ApplicationRoot + "countryside.png", "MasterImage", 0, -1);
     ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
-    ClientView tClient("10.40.51.84", 4000);
+    ClientView tClient("10.40.55.97", 4000);
 
-    if(!tClient.connect(ServerMessage(0x02), 1000)){
+    Update img_update(my_public_key, 0, 5, false);
+
+    if(!tClient.connect(ServerMessage(P2P_UPDATE_IMAGE), 1000)){
         logMessage("Unable to connect to worker");
         return;
     }
-    if(!tClient.sendObject(&img)){
+    if(!tClient.sendObject(&img_update)){
         logMessage("Unable to send picutre");
         return;
     }
@@ -178,7 +189,7 @@ bool Application::updatePeers(){
         logMessage("You need to sign in first!");
         return false;
     }
-    ServerMessage msg(0x01);
+    ServerMessage msg(P2S_UPDATE_PEER_LIST);
     msg.setPayload(my_public_key.getAsString().toStdString().c_str(), my_public_key.getAsString().size());
     if(!Client.connect(msg, 1000)){
         logMessage("Unable to connect to worker.");

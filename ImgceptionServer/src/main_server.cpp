@@ -48,7 +48,7 @@ void retPeerList(WorkerView& Worker, const ServerMessage& initMsg){
 int main(){
     Globals::InitFolders();
     ServerView Server(5000);
-    Server.setCallbackFunc(0x01, retPeerList);
+    Server.setCallbackFunc(P2S_UPDATE_PEER_LIST, retPeerList);
     unsigned int fromIP;
     unsigned short fromPort;
     while(!Server.exitStatus()){

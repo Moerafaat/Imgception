@@ -33,7 +33,7 @@ char* Image::serialize(unsigned int & Size) const{
     imageFile.open(QIODevice::ReadOnly);
     QByteArray bytearr = imageFile.readAll();
 
-    Size = 4 * 5 + image_name.size() + bytearr.size() + Key::PubKeySize;//426 + 4 +image_name.size() + 4 + 4+ 4+ imageString.size() ;
+    Size = 4 * 5 + image_name.size() + bytearr.size() + Key::PubKeySize;
     char* data = new char[Size];
     *(int*)data = HostToNetwork(ID);
     *(int*)(data+4)=HostToNetwork(up_count);
@@ -43,7 +43,7 @@ char* Image::serialize(unsigned int & Size) const{
     memcpy(data+16,image_name.toStdString().c_str(),image_name.size());
 
     *(int*)(data+16+image_name.size())=HostToNetwork(bytearr.size());
-    memcpy(data+4*5+image_name.size()+4, bytearr.data(), bytearr.size());
+    memcpy(data+16+image_name.size()+4, bytearr.data(), bytearr.size());
 
     memcpy(data+Size-Key::PubKeySize, owner_key.getAsString().toStdString().c_str(), Key::PubKeySize);
     return data;
@@ -66,29 +66,13 @@ bool Image::deserialize(const char* const SerializedImage, const unsigned int Si
         delete [] tempImageName;
         return false;
     }
-    qDebug() << ID;
-    qDebug() << up_count;
-    qDebug() << view_limit;
-    qDebug() << image_name_size;
-    qDebug() << image_name;
-    qDebug() << imageStringSize;
     char * tempImageString = new char[imageStringSize];
     QByteArray bytearr(SerializedImage+16+image_name_size + 4, imageStringSize);
-    //memcpy(tempImageString, SerializedImage+16+image_name_size + 4, imageStringSize);
-    //QString imageString = QString::fromStdString(std::string(tempImageString,imageStringSize));
-    //Should store it in a file!!!
 
     QFile file(path = Globals::TempFolderPath + "image.png");
     file.open(QIODevice::WriteOnly);
-    //QTextStream stream(&file);
-    //stream << imageString;
     file.write(bytearr);
     file.close();
-
-    /*QImage img;
-    img.loadFromData((uchar*)imageString.toStdString().c_str(),imageStringSize,"PNG");
-    QString temp_path = Globals::TempFolderPath + "/image.png";
-    img.save(temp_path, "PNG");*/
 
     owner_key.setFromString(QString::fromStdString(std::string(SerializedImage+Size-Key::PubKeySize, Key::PubKeySize)));
     delete [] tempImageString;
