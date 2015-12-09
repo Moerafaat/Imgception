@@ -2,7 +2,6 @@
 
 Notification::Notification(Key SenderKey, Key ReceiverKey, char *Payload, bool PayloadType)
     : sender_key(SenderKey), receiver_key(ReceiverKey), payload(Payload), payload_type(PayloadType){
-
 }
 
 char* Notification::serialize(unsigned int & Size) const{

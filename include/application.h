@@ -13,6 +13,7 @@
 #include "key.h"
 #include "PeriodicUpdate.h"
 #include "Views.h"
+#include "serverthread.h"
 
 using namespace std;
 
@@ -22,12 +23,13 @@ class Application;
 
 class Application : public QMainWindow{
     Q_OBJECT
-
+    friend void GetImage(WorkerView&, const ServerMessage&);
 public:
     explicit Application(QWidget *parent = 0);
     ~Application();
 
     bool updatePeers(); // Stub entry needed.
+    ServerView Server;
 private slots:
     void on_btn_sign_in_clicked();
     void on_btn_sign_up_clicked();
@@ -52,7 +54,7 @@ private:
     void logout(); // Stub entry needed.
 
     PeriodicUpdate PU;
-
+    ServerThread ST;
     pair< vector<Image>, vector<Update> > getNotifications(); // Stub entry needed (store the images first in case an update follows it).
 
     QVector<Image> getAllImages(); // Local invocation.
@@ -70,6 +72,7 @@ private:
     Ui::Application *ui;
 
     ClientView Client; // Client View for communication as client.
+
 
     Key my_public_key; // Fetch from pubkey file.
     Key my_private_key; // Fetch from prikey file.

@@ -26,7 +26,8 @@ SOURCES += src/main_client.cpp \
     src/UDPsocket.cpp \
     src/onlinepeers.cpp \
     src/Steganifier.cpp \
-    src/PeriodicUpdate.cpp
+    src/PeriodicUpdate.cpp \
+    src/serverthread.cpp
 
 HEADERS  += include/application.h \
     include/image.h \
@@ -41,7 +42,8 @@ HEADERS  += include/application.h \
     include/UDPsocket.h \
     include/onlinepeers.h \
     include/Steganifier.h \
-    include/PeriodicUpdate.h
+    include/PeriodicUpdate.h \
+    include/serverthread.h
 
 INCLUDEPATH += include/ \
     /usr/include/python2.7 \

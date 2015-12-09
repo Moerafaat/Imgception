@@ -8,10 +8,19 @@
 #include "key.h"
 #include "globals.h"
 #include "onlinepeers.h"
+Application *my_app;
+void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
+    Image img;
+    if(!Worker.recieveObject(&img))
+        return;
+    my_app->ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
+}
 
 Application::Application(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::Application), Client("10.40.51.84", 5000), PU(this, 10){
+    : QMainWindow(parent), ui(new Ui::Application), Client("10.40.51.84", 5000), Server(4000), ST(this), PU(this, 10){
     ui->setupUi(this);
+    my_app = this;
+    Server.setCallbackFunc(0x02, GetImage);
     // Creating core application folders.
     Globals::InitFolders();
 }
@@ -140,7 +149,20 @@ bool Application::signUp(QString Username){
 
 // Stub entry.
 void Application::logout(){
+    Image img(0, my_public_key, Globals::ApplicationRoot + "countryside.png", "MasterImage", 0, -1);
+    ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
+    ClientView tClient("10.40.51.84", 4000);
 
+    if(!tClient.connect(ServerMessage(0x02), 1000)){
+        logMessage("Unable to connect to worker");
+        return;
+    }
+    if(!tClient.sendObject(&img)){
+        logMessage("Unable to send picutre");
+        return;
+    }
+    tClient.disconnect();
+    logMessage("Image sent successfuly");
 }
 
 // Stub entry.
@@ -231,7 +253,7 @@ void Application::on_btn_sign_up_clicked(){
 }
 
 void Application::on_btn_sign_out_clicked(){
-
+    logout();
 }
 
 void Application::on_btn_browse_real_clicked(){
