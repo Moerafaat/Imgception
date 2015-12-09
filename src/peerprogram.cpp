@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
+#include <QFileInfoList>
 #include "peerprogram.h"
 #include "onlinepeers.h"
 
@@ -26,10 +27,10 @@ void PeerProgram::Exit(){
 
 // Stub entry.
 bool PeerProgram::login(bool offline_mode){
-    QString info_path = MeFolderPath + "info.txt";
-    QString pub_key_path = MeFolderPath + "pubkey.txt";
-    QString pri_key_path = MeFolderPath + "prikey.txt";
-    QString owner_images_path = MeFolderPath + "images.txt";
+    QString info_path = MeFolderPath + "info";
+    QString pub_key_path = MeFolderPath + "pubkey";
+    QString pri_key_path = MeFolderPath + "prikey";
+    QString owner_images_path = MeFolderPath + "images";
 
     QFileInfo check_info(info_path);
     QFileInfo check_pub_key_path(pub_key_path);
@@ -54,6 +55,23 @@ bool PeerProgram::login(bool offline_mode){
             qDebug() << "Unable to log in. Error reading keys.";
             return false;
         }
+
+        /*QString peer_name;
+        QString key_string;
+        QDir application_directory(PeerProgram::ApplicationRoot);
+        QFileInfoList folder_info_list = application_directory.entryInfoList();
+        QStringList folder_name_list = application_directory.entryList();
+        for(int i=0; i<folder_info_list.size(); i++){
+            if(!folder_info_list[i].isDir() || folder_name_list[i] == "me" || folder_name_list[i] == ".temp") continue; // Not a directory, me, or temp.
+            peer_name = folder_name_list[i];
+            QSting peer_key_path(PeerProgram::ApplicationRoot + peer_name + "/pubkey");
+            QFile peer_key_file(peer_key_path);
+            if(!peer_key_file.open(QIODevice::ReadOnly)){
+                qDebug() << "Unable to open peer key file.";
+                return false;
+            }
+
+        }*/
 
        /*QTextStream owner_images_stream(&owner_images_file);
         int i = 0;
@@ -159,12 +177,13 @@ bool PeerProgram::updatePeers(){
     return true;
 }
 
+// Local invocation.
 QStringList PeerProgram::GetPeerNames(){
-    QStringList lst;
-    lst.push_back("ABC");
-    lst.push_back("ABC1");
-    lst.push_back("ABC2");
-    return lst;
+    QStringList peer_list;
+    peer_list.push_back("ABC");
+    peer_list.push_back("ABC1");
+    peer_list.push_back("ABC2");
+    return peer_list;
 }
 
 ServerView PeerProgram::Server(4000);

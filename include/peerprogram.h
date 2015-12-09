@@ -7,6 +7,7 @@
 #include "serverthread.h"
 #include "Views.h"
 #include "key.h"
+#include "peer.h"
 
 #define P2S_UPDATE_PEER_LIST 0x01
 #define P2P_SEND_IMAGE 0x02
@@ -42,6 +43,10 @@ public:
     static Key my_private_key; // Fetch from prikey file.
     static QString my_name; // Fetch from info file.
     static int next_image_ID; // Fetch from info file.
+
+    QVector<Image> own_images; // Own images from images file.
+    QVector<Peer> peer; // All peers (online or offline with previous interaction history.
+    QVector< QMap<QString, int> > authorized_peers; // Vector indexed by image to map of authorized peers and view limit.
 };
 
 #endif // PEERPROGRAM_H
