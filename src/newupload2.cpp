@@ -33,7 +33,7 @@ void NewUpload2::on_UploadButton_Original_clicked()
     bool loaded = pix.load(fileName);
     if(loaded == false)
     {
-            ui->label->setText("Failed to load image" /*+ QDir::currentPath()*/ );
+            ui->Orignial_viewer->setText("Failed to load image" /*+ QDir::currentPath()*/ );
 
     }
     else
@@ -50,7 +50,7 @@ void NewUpload2::on_UploadButton_fake_clicked()
     bool loaded = pix.load(fileName);
     if(loaded == false )
     {
-            ui->label->setText("Failed to load image" /*+ QDir::currentPath()*/ );
+            ui->Fake_viewer->setText("Failed to load image" /*+ QDir::currentPath()*/ );
     }
     else
     {
