@@ -395,7 +395,7 @@ bool ClientView::connect(const ServerMessage& msg, const int timeout){
     while(failCount < 10){
         if(timeout == 0) return true;
         if((buf = client_socket.syncRead(size, timeout)) == nullptr){
-            client_socket.releasePeer(server_ip, server_port);
+            //client_socket.releasePeer(server_ip, server_port);
             cout << "LOG::Unable to read or timeout" << endl;
             return false;
         }

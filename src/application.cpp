@@ -17,7 +17,7 @@ void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
 }
 
 Application::Application(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::Application), Client("10.40.51.84", 5000), Server(4000), ST(this), PU(this, 10){
+    : QMainWindow(parent), ui(new Ui::Application), Client("192.168.43.155", 5000), Server(4000), ST(this), PU(this, 10){
     ui->setupUi(this);
     my_app = this;
     Server.setCallbackFunc(0x02, GetImage);
@@ -151,7 +151,7 @@ bool Application::signUp(QString Username){
 void Application::logout(){
     Image img(0, my_public_key, Globals::ApplicationRoot + "countryside.png", "MasterImage", 0, -1);
     ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
-    ClientView tClient("10.40.51.84", 4000);
+    ClientView tClient("192.168.43.155", 4000);
 
     if(!tClient.connect(ServerMessage(0x02), 1000)){
         logMessage("Unable to connect to worker");
