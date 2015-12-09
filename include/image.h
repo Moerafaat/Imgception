@@ -28,12 +28,11 @@ public:
     static Steganifier s;
 
     int ID; // Image identifier.
-    Key owner_key; // Image owner.
-    QString path; // Path to image.
-    QString image_name; // Image name.
-
     int up_count; // number of times the image has been viewed.
     int view_limit; // the maximum number of times to view the image.
+    QString image_name; // Image name.
+    QString path; // Path to image.
+    Key owner_key; // Image owner.
 };
 
 #endif // IMAGE_H
