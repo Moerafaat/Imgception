@@ -1,36 +1,32 @@
-#include "uploadwindow.h"
-#include "ui_uploadwindow.h"
-#include<QLabel>
-#include<QScrollArea>
-#include<QImage>
-//#include"Steganifier.h"
+#include "newupload2.h"
+#include "ui_newupload2.h"
 
-uploadWindow::uploadWindow(QWidget *parent) :
+NewUpload2::NewUpload2(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::uploadWindow)
+    ui(new Ui::NewUpload2)
 {
-    //ui->setupUi(this);
+    ui->setupUi(this);
     stgna= new Steganifier("/home/yehia/Git-Hub/Imgception-GUI-integration/","Steganify");
 }
 
-uploadWindow::~uploadWindow()
+NewUpload2::~NewUpload2()
 {
     delete ui;
 }
 
-void uploadWindow::on_BrowseButton_Original_clicked()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image File"), "", tr("All Image Files (*.png *jpg *jpeg *ppm);;PNG Images (*.png);;JPEG Images (*.jpeg *.jpg);;PPM Images (*.ppm)"));
-    ui->OriginalImage_lineEdit->setText(fileName);
-}
-
-void uploadWindow::on_BrowseButton_fake_clicked()
+void NewUpload2::on_BrowseButton_fake_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image File"), "", tr("All Image Files (*.png *jpg *jpeg *ppm);;PNG Images (*.png);;JPEG Images (*.jpeg *.jpg);;PPM Images (*.ppm)"));
     ui->fakeImage_lineEdit->setText(fileName);
 }
 
-void uploadWindow::on_UploadButton_Original_clicked()
+void NewUpload2::on_BrowseButton_Original_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image File"), "", tr("All Image Files (*.png *jpg *jpeg *ppm);;PNG Images (*.png);;JPEG Images (*.jpeg *.jpg);;PPM Images (*.ppm)"));
+    ui->OriginalImage_lineEdit->setText(fileName);
+}
+
+void NewUpload2::on_UploadButton_Original_clicked()
 {
     QString fileName = ui->OriginalImage_lineEdit->text();
     QPixmap pix;
@@ -38,6 +34,7 @@ void uploadWindow::on_UploadButton_Original_clicked()
     if(loaded == false)
     {
             ui->label->setText("Failed to load image" /*+ QDir::currentPath()*/ );
+
     }
     else
     {
@@ -46,7 +43,7 @@ void uploadWindow::on_UploadButton_Original_clicked()
     }
 }
 
-void uploadWindow::on_UploadButton_fake_clicked()
+void NewUpload2::on_UploadButton_fake_clicked()
 {
     QString fileName = ui->fakeImage_lineEdit->text();
     QPixmap pix;
@@ -63,14 +60,12 @@ void uploadWindow::on_UploadButton_fake_clicked()
 
 }
 
-void uploadWindow::on_saveButton_clicked()
+void NewUpload2::on_saveButton_clicked()
 {
-    //script path, the full path of the file Steganify.py
-    //script name, Steganify (with no .py)
+        //script path, the full path of the file Steganify.py
+        //script name, Steganify (with no .py)
 
-    QPixmap pix = QPixmap::fromImage(stgna->Steganify(ui->fakeImage_lineEdit->text(),ui->OriginalImage_lineEdit->text()));
-    pix = pix.scaled(ui->Orignial_viewer->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    ui->Orignial_viewer->setPixmap(pix);
+        QPixmap pix = QPixmap::fromImage(stgna->Steganify(ui->fakeImage_lineEdit->text(),ui->OriginalImage_lineEdit->text()));
+        pix = pix.scaled(ui->Orignial_viewer->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        ui->Orignial_viewer->setPixmap(pix);
 }
-
-
