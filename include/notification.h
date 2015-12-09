@@ -14,10 +14,14 @@ public:
     ~Notification() = default;
 
     void setPayload(const char*, const unsigned int, bool);
+    unsigned int generateID();
 
     char *serialize(unsigned int &) const;
     bool deserialize(const char * const, const unsigned int);
 
+    static int nextID;
+
+    unsigned int ID; // Notification Identifier.
     Key sender_key; // Notification sender.
     Key receiver_key; // Notification receiver.
     unsigned int payload_size;

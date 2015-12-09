@@ -33,7 +33,7 @@ void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
     }catch(const char* err){
         qDebug() << QString::fromStdString(std::string(err));
     }*/
-    try{
+    /*try{
         Notification notification;
         qDebug() << "Worker is deployed.";
         if(!Worker.recieveObject(&notification)){
@@ -45,10 +45,22 @@ void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
         qDebug() << notification.payload_size << " " << notification.payload_type;
 
         Image img;
-        if(img.deserialize(notification.payload, notification.payload_size)){
+        if(!img.deserialize(notification.payload, notification.payload_size)){
             qDebug() << "Unable to deserialize.";
+            return;
         }
         my_app->ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
+    }catch(const char* err){
+        qDebug() << QString::fromStdString(std::string(err));
+    }*/
+    try{
+        NotificationHeader NH;
+        qDebug() << "Worker is deployed.";
+        if(!Worker.recieveObject(&NH)){
+            qDebug() << "Unable to receive Notification Header.";
+            return;
+        }
+        qDebug() << NH.number_of_notifications;
     }catch(const char* err){
         qDebug() << QString::fromStdString(std::string(err));
     }
@@ -58,7 +70,7 @@ Application::Application(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::Application), Client("10.40.55.97", 5000), Server(4000), ST(this), PU(this, 10){
     ui->setupUi(this);
     my_app = this;
-    Server.setCallbackFunc(P2P_UPDATE_IMAGE, GetImage);
+    Server.setCallbackFunc(P2S_NOTIFICATION, GetImage);
     ST.start();
     // Creating core application folders.
     Globals::InitFolders();
@@ -193,15 +205,12 @@ void Application::logout(){
     ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
     ClientView tClient("10.40.55.97", 4000);
 
-    Notification notification(my_public_key, my_public_key);
-    unsigned int size;
-    char* buf = img.serialize(size);
-    notification.setPayload(buf, size, false);
+    NotificationHeader NH(5);
     if(!tClient.connect(ServerMessage(P2S_NOTIFICATION), 1000)){
         logMessage("Unable to connect to worker");
         return;
     }
-    if(!tClient.sendObject(&notification)){
+    if(!tClient.sendObject(&NH)){
         logMessage("Unable to send picutre");
         return;
     }
