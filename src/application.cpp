@@ -11,22 +11,27 @@
 Application *my_app;
 void GetImage(WorkerView& Worker, const ServerMessage& initMsg){
     Image img;
-    if(!Worker.recieveObject(&img))
+    qDebug() << "Worker is deployed";
+    if(!Worker.recieveObject(&img)){
+        qDebug() << "Unable to receive Image.";
         return;
+    }
     my_app->ui->lbl_image->setPixmap(QPixmap::fromImage(img.getImage()));
 }
 
 Application::Application(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::Application), Client("192.168.43.155", 5000), Server(4000), ST(this), PU(this, 10){
+    : QMainWindow(parent), ui(new Ui::Application), Client("10.40.51.84", 5000), Server(4000), ST(this), PU(this, 10){
     ui->setupUi(this);
     my_app = this;
     Server.setCallbackFunc(0x02, GetImage);
+    ST.start();
     // Creating core application folders.
     Globals::InitFolders();
 }
 
 Application::~Application(){
     PU.Exit();
+    Server.cleanExit();
     delete ui;
 }
 

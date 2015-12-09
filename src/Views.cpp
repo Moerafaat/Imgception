@@ -359,6 +359,7 @@ bool WorkerView::recieveObject(Transmittable * const obj, const unsigned int nTr
     }
 
     if(!obj->deserialize(serial, drive.MessageSize)){
+        cout << "A7eh" << endl;
         delete [] serial;
         return false;
     }
