@@ -72,15 +72,11 @@ bool Image::deserialize(const char* const SerializedImage, const unsigned int Si
 
 // Stub entry.
 QImage Image::getImage(){ // Function that returns the image for display.
+    return QImage(path);    //Don't forget to remove
     if(up_count < view_limit)
     {
-        up_count++;
-        return s.DeSteganify(path+image_name);
+        up_count += view_limit != -1;
+        return s.DeSteganify(path);
     }
-    else
-    {
-        QFile imageFile(path+image_name); QTextStream imageStream(&imageFile);
-        QImage temp; temp.load(imageStream.readAll().toStdString().c_str(),"PNG");
-        return temp;
-    }
+    else return QImage(path);
 }

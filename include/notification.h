@@ -11,7 +11,7 @@ public:
     Notification() = default;
     Notification(const Notification&) = default;
     Notification(Notification&&) = default;
-    Notification(RSA, RSA, char *, bool);
+    Notification(RSA, RSA, char *,int ,bool);
     ~Notification() = default;
 
     char *serialize(unsigned int &) const;
@@ -20,6 +20,7 @@ private:
     RSA sender_key; // Notification sender.
     RSA receiver_key; // Notification receiver.
     char*payload; // Send either image or update.
+    int payloadSize; //
     bool payload_type; // 0 means image, 1 means update.
 };
 

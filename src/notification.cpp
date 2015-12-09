@@ -1,6 +1,6 @@
 #include "notification.h"
 
-Notification::Notification(RSA SenderKey, RSA ReceiverKey, char *Payload, bool PayloadType){
+Notification::Notification(RSA SenderKey, RSA ReceiverKey, char *Payload, int, bool PayloadType){
 
 }
 
