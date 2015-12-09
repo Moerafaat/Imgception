@@ -12,7 +12,6 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 #include "mainwindow.h"
-#include "ui_application.h"
 #include "key.h"
 #include "onlinepeers.h"
 

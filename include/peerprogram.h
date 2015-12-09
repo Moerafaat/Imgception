@@ -31,7 +31,7 @@ public:
     static bool signUp(QString); // Local invocation.
     static bool updatePeers(); // Stub entry.
 
-    static QStringList GetPeerNames();
+    static QStringList GetPeerNames(); // Local invocation.
 
     static ServerView Server;
     static ClientView Client;
