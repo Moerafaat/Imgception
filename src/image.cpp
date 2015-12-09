@@ -8,13 +8,11 @@
 
 Steganifier Image::s(QDir::homePath(),QString("Steganify"));
 
-Image::Image(int Id, Key OwnerKey, QString Path, QString Name, int UpCount, int ViewLimit):ID(Id),owner_key(OwnerKey),view_limit(-1),up_count(0),path(Path),image_name(Name)
-{
+Image::Image(int Id, Key OwnerKey, QString Path, QString Name, int UpCount, int ViewLimit):ID(Id),owner_key(OwnerKey),view_limit(-1),up_count(0),path(Path),image_name(Name){
 
 }
 
-Image::Image(int Id, Key OwnerKey, QString fakePath, QString realPath, QString pathToSaveTo, QString imageName):ID(Id),owner_key(OwnerKey),image_name(imageName),path(pathToSaveTo),view_limit(-1),up_count(0)
-{
+Image::Image(int Id, Key OwnerKey, QString fakePath, QString realPath, QString pathToSaveTo, QString imageName):ID(Id),owner_key(OwnerKey),image_name(imageName),path(pathToSaveTo),view_limit(-1),up_count(0){
     QImage image = s.Steganify(fakePath,realPath);
     image.save(pathToSaveTo+imageName,"PNG");
 }

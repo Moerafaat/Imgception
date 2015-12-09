@@ -3,17 +3,21 @@
 
 
 #include "transmittable.h"
+#include "key.h"
 
 class Update : public Transmittable{
 public:
-    Update();
+    Update() = default;
+    Update(const Update&) = default;
+    Update(Update&&) = default;
+    Update(Key, unsigned int, unsigned int, bool);
 
     char *serialize(unsigned int &) const;
     bool deserialize(const char * const, const unsigned int);
 private:
-    int owner_key; // notification sender.
-    int image_key; // image to be updated.
-    int new_limit; // limit update.
+    Key owner_key; // notification sender.
+    unsigned int image_key; // image to be updated.
+    unsigned int new_limit; // limit update.
     bool new_start; // If true, reset up_count, otherwise keep it the same.
 };
 

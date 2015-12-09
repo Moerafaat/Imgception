@@ -2,23 +2,25 @@
 #define NOTIFICATION_H
 
 
-#include <openssl/rsa.h>
-#include <openssl/pem.h>
 #include "transmittable.h"
+#include "key.h"
 
 class Notification : public Transmittable{
 public:
     Notification() = default;
     Notification(const Notification&) = default;
     Notification(Notification&&) = default;
-    Notification(RSA, RSA, char *, bool);
+    Notification(Key, Key, char *, bool);
     ~Notification() = default;
+
+    void setPayload(const char*, const unsigned int, bool);
 
     char *serialize(unsigned int &) const;
     bool deserialize(const char * const, const unsigned int);
 private:
-    RSA sender_key; // Notification sender.
-    RSA receiver_key; // Notification receiver.
+    Key sender_key; // Notification sender.
+    Key receiver_key; // Notification receiver.
+    unsigned int payload_size;
     char*payload; // Send either image or update.
     bool payload_type; // 0 means image, 1 means update.
 };

@@ -6,12 +6,12 @@
 
 class NotificationHeader : public Transmittable{
 public:
-    NotificationHeader(int);
+    NotificationHeader(unsigned int);
 
     char *serialize(unsigned int &) const;
     bool deserialize(const char * const, const unsigned int);
 private:
-    int number_of_notifications; // Number of notifications that will be recieved.
+    unsigned int number_of_notifications; // Number of notifications that will be recieved.
 };
 
 #endif // NOTIFICATIONHEADER_H
