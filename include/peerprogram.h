@@ -43,6 +43,7 @@ public:
     static int getAuthorizedLimit(QString, int);
     static void AddOwnImage(Image);
     static int getNewImageID();
+    static void AddAuthentication(int, QString, int);
 
     static ServerView Server;
     static ClientView Client;

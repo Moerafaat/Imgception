@@ -144,6 +144,11 @@ void Dialog::on_DeleteUser_btn_clicked(){
 
 void Dialog::on_Refresh_btn_clicked(){
     //PeerProgram::updatePeers();
+    ui->tableView->setVisible(false);
+    ui->AddUser_btn->setVisible(false);
+    ui->Update_image_data->setVisible(false);
+    ui->DeleteUser_btn->setVisible(false);
+    ui->comboBox->setVisible(false);
     UpdateGUI();
     //GetNotifications  ***************************************************************
     //Update GUI
@@ -159,9 +164,13 @@ void Dialog::on_AddUser_btn_clicked(){
             return;
     QList<QStandardItem *> lst;
     lst.push_back(new QStandardItem(ui->comboBox->currentText()));
-    lst.push_back(new QStandardItem("0"));
+    lst.push_back(new QStandardItem("1"));
     lst[0]->setEditable(false);
     model->appendRow(lst);
+
+    QModelIndex idx = ui->treeWidget->selectionModel()->selectedIndexes()[0];
+    UserPanelKey.push_back(ComboBoxKeys[ui->comboBox->currentIndex()]);
+    PeerProgram::AddAuthentication(ImageID[0][idx.row()], UserPanelKey.back(), lst[1]->data().toString().toInt());
 }
 
 void Dialog::on_TableViewItemEdit()

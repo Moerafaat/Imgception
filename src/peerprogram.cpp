@@ -311,6 +311,11 @@ void PeerProgram::AddOwnImage(Image img){
 int PeerProgram::getNewImageID(){
     return next_image_ID++;
 }
+void PeerProgram::AddAuthentication(int imgID, QString key, int vLimit){
+    QMap<QString, int> &mp = authorized_peers[own_img_key_to_index[imgID]];
+    if(mp.count(key) == 0) mp.insert(key, vLimit);
+    else mp[key] = vLimit;
+}
 
 ServerView PeerProgram::Server(4000);
 ClientView PeerProgram::Client("10.40.55.95", 5000);
