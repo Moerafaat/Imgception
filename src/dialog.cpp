@@ -35,7 +35,11 @@ Dialog::Dialog(QWidget *parent) :
 }
 
 Dialog::~Dialog(){
-    PeerProgram::Exit();
+    try{
+    PeerProgram::signOut();
+    }catch(const char *err){
+        qDebug() << "ERROR::" << err;
+    }
     delete model;
     delete ui;
 }

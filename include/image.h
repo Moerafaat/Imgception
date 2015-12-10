@@ -14,8 +14,8 @@ public:
     Image(const Image&) = default;
     Image(Image&&) = default;
     Image(int, Key, QString, QString, int, int);
-    //fake path, real path, pathToSaveTo, name
-    Image(int Id, Key, QString, QString, QString, QString);
+    //fake path, real path, name
+    Image(int Id, Key, QString, QString, QString);
     ~Image() = default;
 
     Image& operator=(const Image&);

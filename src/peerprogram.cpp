@@ -3,12 +3,14 @@
 #include <QFile>
 #include <QTextStream>
 #include <QFileInfoList>
+#include <QCryptographicHash>
 #include "peerprogram.h"
 #include "onlinepeers.h"
 
 const QString PeerProgram::ApplicationRoot = QDir::homePath() + "/Imgception/";
-const QString PeerProgram::MeFolderPath = PeerProgram::ApplicationRoot + "me/";
+const QString PeerProgram::MeFolderPath = PeerProgram::ApplicationRoot + "__me__/";
 const QString PeerProgram::TempFolderPath = PeerProgram::ApplicationRoot + ".temp/";
+const QString PeerProgram::UpdateCache = PeerProgram::TempFolderPath + "__UpdateCache__";
 
 void PeerProgram::InitFolders(){
     QDir tDir(PeerProgram::ApplicationRoot);
@@ -17,12 +19,6 @@ void PeerProgram::InitFolders(){
     if(!tDir.exists()) tDir.mkpath(".");
     tDir.setPath(PeerProgram::TempFolderPath);
     if(!tDir.exists()) tDir.mkpath(".");
-}
-
-void PeerProgram::Exit(){
-    //Save Data structure?
-    Server.cleanExit();
-    PU.Exit();
 }
 
 // Stub entry.
@@ -44,69 +40,89 @@ bool PeerProgram::login(bool offline_mode){
         return false;
     }
 
-    QFile info_file(info_path);
-    QFile owner_images_file(owner_images_path);
-    if(info_file.open(QIODevice::ReadOnly) && owner_images_file.open(QIODevice::ReadOnly)){ // Successful open file.
-        QTextStream info_stream(&info_file);
-        info_stream >> my_name;
-        info_stream >> next_image_ID;
+    QFile file;
+    file.setFileName(info_path);
+    if(file.open(QIODevice::ReadOnly)){
+        QTextStream fin(&file);
+        fin >> my_name;
+        fin >> next_image_ID;
+        file.close();
+    }
+    else{
+        qDebug() << "Unable to read my info.";
+        return false;
+    }
 
-        if(!my_public_key.readFromFile(pub_key_path) || !my_private_key.readFromFile(pri_key_path, true)){
-            qDebug() << "Unable to log in. Error reading keys.";
-            return false;
-        }
+    if(!my_public_key.readFromFile(pub_key_path) || !my_private_key.readFromFile(pri_key_path, true)){
+        qDebug() << "Unable to log in. Error reading keys.";
+        return false;
+    }
 
-        QTextStream owner_images_stream(&owner_images_file);
-        int nImg; owner_images_stream >> nImg;
+    file.setFileName(owner_images_path);
+    if(file.open(QIODevice::ReadOnly)){ // Successful open file.
+        QTextStream fin(&file);
+        int nImg; fin >> nImg;
         for(int i = 0; i < nImg; i++){
-            int imgID; owner_images_stream >> imgID;
-            QString imgName; owner_images_stream >> imgName;
-            int nShares; owner_images_stream >> nShares;
+            int imgID; fin >> imgID;
+            QString imgName; fin >> imgName;
+            int nShares; fin >> nShares;
             own_images.push_back(Image(imgID, my_public_key, PeerProgram::MeFolderPath + QString::number(imgID) + ".png", imgName, 0, -1));
             authorized_peers.push_back(QMap<QString, int>());
             for(int j = 0; j < nShares; j++){
-                owner_images_stream.skipWhiteSpace();
-                QString peer_key = owner_images_file.read(Key::PubKeySize);
-                int vlimit; owner_images_stream >> vlimit;
+                fin.skipWhiteSpace();
+                QString peer_key = fin.read(Key::PubKeySize);
+                int vlimit; fin >> vlimit;
                 authorized_peers.back()[peer_key] = vlimit;
             }
         }
-
-        QString peer_name;
-        Key key;
-        QDir application_directory(PeerProgram::ApplicationRoot);
-        QFileInfoList folder_info_list = application_directory.entryInfoList();
-        QStringList folder_name_list = application_directory.entryList();
-        for(int i=0; i<folder_info_list.size(); i++){
-            if(!folder_info_list[i].isDir() || folder_name_list[i] == "me" || folder_name_list[i] == ".temp") continue; // Not a directory, me, or temp.
-            peer_name = folder_name_list[i];
-            QString peer_key_path(PeerProgram::ApplicationRoot + peer_name + "/pubkey");
-            key.readFromFile(peer_key_path);
-
-            peer_list.push_back(Peer(key, peer_name, false, -1, -1));
-            peer_key_to_index.insert(key.getAsString(), peer_list.size() - 1);
-        }
-
-        /*if(offline_mode){ // Fetch images from the local database.
-
-        }
-        else{ // Fetch images remotely + local database.
-            updatePeers();
-        }*/
-
-        qDebug() << "Sign in successful.";
-        return true;
+        file.close();
     }
     else{
-        qDebug() << "Error during sign in.";
+        qDebug() << "Unable to read my images.";
         return false;
     }
+
+    QDir application_directory(PeerProgram::ApplicationRoot);
+    QFileInfoList folder_info_list = application_directory.entryInfoList();
+    QStringList folder_name_list = application_directory.entryList();
+    qDebug() << folder_name_list.size();
+    qDebug() << folder_info_list.size();
+    for(int i=0; i<folder_info_list.size(); i++){
+        if(!folder_info_list[i].isDir() || folder_name_list[i] == "." || folder_name_list[i] == ".." || folder_name_list[i] == "__me__" || folder_name_list[i] == ".temp") continue; // Not a directory, me, or temp.
+
+        Key key(PeerProgram::ApplicationRoot + folder_name_list[i] + "/pubkey");
+        peer_key_to_index.insert(key.getAsString(), peer_list.size());
+
+        file.setFileName(PeerProgram::ApplicationRoot + folder_name_list[i] + "/info");
+        if(!file.open(QIODevice::ReadOnly)){
+            qDebug() << "Unable to open peer info file";
+            return false;
+        }
+        QTextStream fin(&file);
+        QString peer_name = folder_name_list[i];
+        peer_list.push_back(Peer(key, peer_name, false, -1, -1));
+
+        int nImg; fin >> nImg;
+        for(int j = 0; j < nImg; j++){
+            int imgID;  fin >> imgID;
+            QString imgName; fin >> imgName;
+            int upCnt;  fin >> upCnt;
+            int vLimit; fin >> vLimit;
+            peer_list.back().image_list.push_back(Image(imgID, key, PeerProgram::ApplicationRoot + folder_name_list[i] + "/" + QString::number(imgID) + ".png", imgName, upCnt, vLimit));
+            peer_list.back().image_key_to_index.insert(imgID, peer_list.back().image_list.size() - 1);
+        }
+        file.close();
+    }
+
+    //PU.start();
+    qDebug() << "Sign in successful.";
+    return true;
 }
 
 // Local invocation.
 bool PeerProgram::signUp(QString Username){
-
-    QString info_path = MeFolderPath + "info.txt";
+    if(Username == "") return false;
+    QString info_path = MeFolderPath + "info";
     QFileInfo check_file(info_path);
     if(check_file.exists()){ // Already signed up.
         qDebug() << "You already signed up.";
@@ -114,9 +130,9 @@ bool PeerProgram::signUp(QString Username){
     }
 
     // First time to sign up.
-    QString pub_key_path = MeFolderPath + "pubkey.txt";
-    QString pri_key_path = MeFolderPath + "prikey.txt";
-    QString owner_images_path = MeFolderPath + "images.txt";
+    QString pub_key_path = MeFolderPath + "pubkey";
+    QString pri_key_path = MeFolderPath + "prikey";
+    QString owner_images_path = MeFolderPath + "images";
     QFile info_file(info_path);
     QFile owner_images_file(owner_images_path);
 
@@ -131,9 +147,11 @@ bool PeerProgram::signUp(QString Username){
     }
 
     QTextStream out_stream(&info_file);
-    out_stream << Username + " 0" << endl;
+    out_stream << Username + " 0";
     info_file.close();
 
+    QTextStream fout(&owner_images_file);
+    fout << "0";
     owner_images_file.close(); // Empty owner images file.
 
     //Generate keys.
@@ -143,9 +161,49 @@ bool PeerProgram::signUp(QString Username){
         //Should delete fils on failure
         return false;
     }
-
     qDebug() << "Sign up successful.";
     return true;
+}
+
+void PeerProgram::signOut(){
+    //update me stuff
+    QFile file(MeFolderPath+"info");
+    if(file.open(QIODevice::WriteOnly)){
+        QTextStream fout(&file);
+        fout<<my_name<<" "<<next_image_ID;
+        file.close();
+    }
+    else throw("Unable to open user info file.");
+    file.setFileName(MeFolderPath+"images");
+    if(file.open(QIODevice::WriteOnly)){
+        QTextStream fout(&file);
+        fout << own_images.size() << '\n';
+        for(int i = 0; i < own_images.size(); i++){
+            fout << own_images[i].ID << ' ' << own_images[i].image_name << ' ' << authorized_peers[i].size();
+            for(QMap<QString, int>::const_iterator it = authorized_peers[i].begin(); it!=authorized_peers[i].end(); it++)
+                fout << '\n' << it.key() << ' ' << it.value();
+        }
+        file.close();
+    }
+    else throw("Unable to write user images file.");
+    //update every peer
+    for(int i=0;i<peer_list.size();i++) if(peer_list[i].image_list.size()==0){
+        QDir peerDir(ApplicationRoot+peer_list[i].name+"/");
+        if(peerDir.exists() && peerDir.removeRecursively()) throw ("Unable to delete Peer Director");
+    }
+    else{
+        if(!QDir(ApplicationRoot+peer_list[i].name+"/").exists()) throw("Unexpected error while updating peer");
+        file.setFileName(ApplicationRoot+peer_list[i].name+"/info");
+        if(!file.open(QIODevice::WriteOnly)) throw("Unable to open file.");
+        QTextStream fout(&file);
+        fout << peer_list[i].image_list.size() << '\n';
+        for(int j = 0; j < peer_list[i].image_list.size(); j++)
+            fout << peer_list[i].image_list[j].ID << ' ' << peer_list[i].image_list[j].image_name << ' ' << peer_list[i].image_list[j].up_count << ' ' << peer_list[i].image_list[j].view_limit << '\n';
+        file.close();
+    }
+    if(QFileInfo(UpdateCache).exists() && !QFile(UpdateCache).remove()) throw("Unable to delete cache file.");
+    Server.cleanExit();
+    PU.Exit();
 }
 
 // Stub entry.
@@ -168,6 +226,7 @@ bool PeerProgram::updatePeers(){
     }
 
     //Actually update
+    //Don't forget to create Peer folder if needed
 
     Client.disconnect(); // Disconnect from worker.
     qDebug() << "Refresh done!";

@@ -24,12 +24,12 @@ public:
     static const QString ApplicationRoot;
     static const QString MeFolderPath;
     static const QString TempFolderPath;
-
+    static const QString UpdateCache;
     static void InitFolders();
-    static void Exit();
 
     static bool login(bool); // Stub entry.
     static bool signUp(QString); // Local invocation.
+    static void signOut();
     static bool updatePeers(); // Stub entry.
 
     static QStringList GetPeerNames(); // Local invocation.
