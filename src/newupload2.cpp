@@ -85,9 +85,9 @@ void NewUpload2::on_saveButton_clicked()
 
             QPixmap pix = QPixmap::fromImage(MyNewImage.getImage());
             //QPixmap::fromImage(stgna->Steganify(ui->fakeImage_lineEdit->text(),ui->OriginalImage_lineEdit->text()));
-            //pix = pix.scaled(ui->Orignial_viewer->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            pix = pix.scaled(ui->Orignial_viewer->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->Orignial_viewer->setPixmap(pix);
-            ui->originalImageLabel->text()="Steganified New Image";
+            ui->label_4->setText("Steganified New Image");
         }
         else
             QMessageBox::critical(this, "Sizes Don't match","Fake Image is 3x byte size or more of Original Image ");

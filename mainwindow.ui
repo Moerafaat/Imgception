@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>535</width>
-    <height>714</height>
+    <width>557</width>
+    <height>699</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,8 +29,8 @@ background-color: rgb(64, 105, 159);
    <widget class="QLineEdit" name="Username">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>610</y>
+      <x>250</x>
+      <y>590</y>
       <width>171</width>
       <height>25</height>
      </rect>
@@ -44,9 +44,6 @@ background-color: rgb(64, 105, 159);
     </property>
     <property name="styleSheet">
      <string notr="true">background-color:rgb(255, 255, 255)</string>
-    </property>
-    <property name="inputMask">
-     <string/>
     </property>
     <property name="text">
      <string/>
@@ -95,8 +92,8 @@ border-radius: 55px;</string>
    <widget class="QPushButton" name="SignUP_btn">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>550</y>
+      <x>150</x>
+      <y>530</y>
       <width>81</width>
       <height>91</height>
      </rect>
@@ -148,7 +145,7 @@ border-radius: 55px;</string>
      <rect>
       <x>60</x>
       <y>520</y>
-      <width>91</width>
+      <width>71</width>
       <height>41</height>
      </rect>
     </property>
@@ -181,6 +178,9 @@ border-radius: 55px;</string>
       <width>420</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -216,8 +216,8 @@ border-radius: 55px;</string>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>550</y>
+      <x>250</x>
+      <y>530</y>
       <width>221</width>
       <height>61</height>
      </rect>
@@ -269,7 +269,7 @@ It's free to join and easy to use.</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>535</width>
+     <width>557</width>
      <height>25</height>
     </rect>
    </property>

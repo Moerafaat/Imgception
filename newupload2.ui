@@ -87,7 +87,7 @@
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>1342</x>
+     <x>1380</x>
      <y>69</y>
      <width>131</width>
      <height>27</height>
@@ -130,7 +130,7 @@
     <rect>
      <x>302</x>
      <y>79</y>
-     <width>131</width>
+     <width>251</width>
      <height>27</height>
     </rect>
    </property>
@@ -196,10 +196,10 @@
   <widget class="QPushButton" name="saveButton">
    <property name="geometry">
     <rect>
-     <x>1220</x>
-     <y>10</y>
+     <x>1270</x>
+     <y>30</y>
      <width>85</width>
-     <height>71</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -225,7 +225,7 @@
   <widget class="QLineEdit" name="NewImageName_lineEdit">
    <property name="geometry">
     <rect>
-     <x>910</x>
+     <x>880</x>
      <y>40</y>
      <width>281</width>
      <height>27</height>
@@ -238,7 +238,7 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>990</x>
+     <x>960</x>
      <y>20</y>
      <width>131</width>
      <height>17</height>
@@ -249,6 +249,22 @@
    </property>
    <property name="text">
     <string>Name of New File</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Done_btn">
+   <property name="geometry">
+    <rect>
+     <x>1170</x>
+     <y>30</y>
+     <width>85</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(144, 170, 255);</string>
+   </property>
+   <property name="text">
+    <string>Done</string>
    </property>
   </widget>
  </widget>
