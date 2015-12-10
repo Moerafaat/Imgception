@@ -2,10 +2,13 @@
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
+#include <iostream>
 #include <QFileInfoList>
 #include <QCryptographicHash>
 #include "peerprogram.h"
 #include "onlinepeers.h"
+
+using namespace std;
 
 const QString PeerProgram::ApplicationRoot = QDir::homePath() + "/Imgception/";
 const QString PeerProgram::MeFolderPath = PeerProgram::ApplicationRoot + "__me__/";
@@ -245,8 +248,6 @@ bool PeerProgram::updatePeers(){
             pr.name = online.getPeerName(i);
         }
     }
-    //Actually update
-    //Don't forget to create Peer folder if needed
 
     Client.disconnect(); // Disconnect from worker.
     qDebug() << "Refresh done!";
@@ -262,11 +263,11 @@ QVector<QString> PeerProgram::getAllKeys(){
         ret[i + 1] = peer_list[i].key.getAsString();
     return ret;
 }
-QVector<QString> PeerProgram::getPeerKeys(){
+QVector<QString> PeerProgram::getOnlinePeerKeys(){
     QVector<QString> ret;
-    ret.resize(peer_list.size());
     for(int i = 0; i < peer_list.size(); i++)
-        ret[i] = peer_list[i].key.getAsString();
+        if(peer_list[i].online)
+            ret.push_back(peer_list[i].key.getAsString());
     return ret;
 }
 QString PeerProgram::getNameByKey(QString key_str){
@@ -314,20 +315,22 @@ void PeerProgram::AddOwnImage(Image img){
 int PeerProgram::getNewImageID(){
     return next_image_ID++;
 }
-void PeerProgram::AddAuthentication(int imgID, QString key, int vLimit){
+bool PeerProgram::AddAuthentication(int imgID, QString key, int vLimit){
+    cout << hex << peer_list[peer_key_to_index[key]].IP;
     ClientView tClient(peer_list[peer_key_to_index[key]].IP, 4000);
     if(!tClient.connect(ServerMessage(P2P_SEND_IMAGE), 1000)){
         qDebug() << "Unable to connect to peer worker.";
-        return;
+        return false;
     }
     if(!tClient.sendObject(&own_images[own_img_key_to_index[imgID]])){
         qDebug() << "Unable to send picture.";
-        return;
+        return false;
     }
     tClient.disconnect();
     QMap<QString, int> &mp = authorized_peers[own_img_key_to_index[imgID]];
     if(mp.count(key) == 0) mp.insert(key, vLimit);
     else mp[key] = vLimit;
+    return true;
 }
 
 ServerView PeerProgram::Server(4000);

@@ -34,7 +34,7 @@ public:
     static bool updatePeers(); // Stub entry.
 
     static QVector<QString> getAllKeys();
-    static QVector<QString> getPeerKeys();
+    static QVector<QString> getOnlinePeerKeys();
     static QString getNameByKey(QString);
     static QVector<QString> getVectorNameByKey(QVector<QString>);
     static QVector<int> getAllImageIDByOwner(QString);
@@ -43,7 +43,7 @@ public:
     static int getAuthorizedLimit(QString, int);
     static void AddOwnImage(Image);
     static int getNewImageID();
-    static void AddAuthentication(int, QString, int);
+    static bool AddAuthentication(int, QString, int);
 
     static ServerView Server;
     static ClientView Client;

@@ -102,7 +102,7 @@ void Dialog::on_Edit_btn_clicked(){
     //Setting Up GUI
     ui->comboBox->clear();
 
-    ComboBoxKeys = PeerProgram::getPeerKeys();
+    ComboBoxKeys = PeerProgram::getOnlinePeerKeys();
     ui->comboBox->addItems(QList<QString>::fromVector(PeerProgram::getVectorNameByKey(ComboBoxKeys)));
     model->clear();
 
@@ -166,11 +166,12 @@ void Dialog::on_AddUser_btn_clicked(){
     lst.push_back(new QStandardItem(ui->comboBox->currentText()));
     lst.push_back(new QStandardItem("1"));
     lst[0]->setEditable(false);
-    model->appendRow(lst);
 
     QModelIndex idx = ui->treeWidget->selectionModel()->selectedIndexes()[0];
     UserPanelKey.push_back(ComboBoxKeys[ui->comboBox->currentIndex()]);
-    PeerProgram::AddAuthentication(ImageID[0][idx.row()], UserPanelKey.back(), 1);
+    if(PeerProgram::AddAuthentication(ImageID[0][idx.row()], UserPanelKey.back(), 1)){
+        model->appendRow(lst);
+    }
 }
 
 void Dialog::on_TableViewItemEdit()
