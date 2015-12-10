@@ -1,5 +1,5 @@
-#include <cstdio>
 #include <QTextStream>
+#include <cstdio>
 #include <openssl/pem.h>
 #include <QFile>
 #include "key.h"

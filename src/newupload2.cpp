@@ -72,16 +72,14 @@ void NewUpload2::on_saveButton_clicked()
         QMessageBox::critical(this, "Invalid Username","Please Enter a Username.");
     else
     {
-
         QFile* fakeImage_file = new QFile(ui->fakeImage_lineEdit->text());
         QFile* OriginalImage_file = new QFile(ui->OriginalImage_lineEdit->text());
         if( fakeImage_file->size() < 2e9 && fakeImage_file->size()/OriginalImage_file->size() > 3  )
         {
-            Image MyNewImage(PeerProgram::next_image_ID,Key(),
+            Image MyNewImage(PeerProgram::getNewImageID(),Key(),
                              ui->fakeImage_lineEdit->text(),ui->OriginalImage_lineEdit->text()
                              , ui->NewImageName_lineEdit->text());
-                    PeerProgram::next_image_ID++;
-
+            PeerProgram::AddOwnImage(MyNewImage);
             QPixmap pix = QPixmap::fromImage(MyNewImage.getImage());
             //QPixmap::fromImage(stgna->Steganify(ui->fakeImage_lineEdit->text(),ui->OriginalImage_lineEdit->text()));
             pix = pix.scaled(ui->Orignial_viewer->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -91,4 +89,5 @@ void NewUpload2::on_saveButton_clicked()
         else
             QMessageBox::critical(this, "Sizes Don't match","Fake Image is 3x byte size or more of Original Image ");
     }
+    this->close();
 }

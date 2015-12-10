@@ -39,6 +39,10 @@ public:
     static QVector<QString> getVectorNameByKey(QVector<QString>);
     static QVector<int> getAllImageIDByOwner(QString);
     static Image getImgByID(QString, int);
+    static QVector<QString> getAuthorizedListByImageID(int);
+    static int getAuthorizedLimit(QString, int);
+    static void AddOwnImage(Image);
+    static int getNewImageID();
 
     static ServerView Server;
     static ClientView Client;

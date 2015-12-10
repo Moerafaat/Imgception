@@ -181,7 +181,7 @@ void PeerProgram::signOut(){
         for(int i = 0; i < own_images.size(); i++){
             fout << own_images[i].ID << ' ' << own_images[i].image_name << ' ' << authorized_peers[i].size();
             for(QMap<QString, int>::const_iterator it = authorized_peers[i].begin(); it!=authorized_peers[i].end(); it++)
-                fout << '\n' << it.key() << ' ' << it.value();
+                fout << '\n' << it.key() << ' ' << it.value() << '\n';
         }
         file.close();
     }
@@ -274,9 +274,29 @@ Image PeerProgram::getImgByID(QString key_str, int imgID){
     if(key_str == my_public_key.getAsString()) return own_images[own_img_key_to_index[imgID]];
     else return peer_list[peer_key_to_index[key_str]].image_list[peer_list[peer_key_to_index[key_str]].image_key_to_index[imgID]];
 }
+QVector<QString> PeerProgram::getAuthorizedListByImageID(int imgID){
+    QVector<QString> ret;
+    QMap<QString, int> &ref = authorized_peers[own_img_key_to_index[imgID]];
+    for(QMap<QString, int>::iterator it = ref.begin(); it != ref.end(); it++)
+        ret.push_back(it.key());
+    return ret;
+}
+int PeerProgram::getAuthorizedLimit(QString KEY, int imgID){
+    QMap<QString, int>& ref= authorized_peers[own_img_key_to_index[imgID]];
+    if(ref.count(KEY) == 0) return 0;
+    return ref[KEY];
+}
+void PeerProgram::AddOwnImage(Image img){
+    own_images.push_back(img);
+    own_img_key_to_index.insert(img.ID, own_images.size() - 1);
+    authorized_peers.push_back(QMap<QString, int>());
+}
+int PeerProgram::getNewImageID(){
+    return next_image_ID++;
+}
 
 ServerView PeerProgram::Server(4000);
-ClientView PeerProgram::Client("10.40.55.97", 5000);
+ClientView PeerProgram::Client("10.40.55.95", 5000);
 PeriodicUpdate PeerProgram::PU(10);
 ServerThread PeerProgram::ST;
 
