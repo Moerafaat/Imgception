@@ -25,6 +25,7 @@ public:
 
     QImage getImage(); // Local invocation. Return image for Display (Open the file and Decode Steganography).
     QString getName();
+    void setPath(QString);
 
     static Steganifier s;
 

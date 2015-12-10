@@ -58,35 +58,9 @@ bool PeerProgram::login(bool offline_mode){
         return false;
     }
 
-    file.setFileName(owner_images_path);
-    if(file.open(QIODevice::ReadOnly)){ // Successful open file.
-        QTextStream fin(&file);
-        int nImg; fin >> nImg;
-        for(int i = 0; i < nImg; i++){
-            int imgID; fin >> imgID;
-            QString imgName; fin >> imgName;
-            int nShares; fin >> nShares;
-            own_images.push_back(Image(imgID, my_public_key, PeerProgram::MeFolderPath + QString::number(imgID) + ".png", imgName, 0, -1));
-            own_img_key_to_index.insert(imgID, own_images.size() - 1);
-            authorized_peers.push_back(QMap<QString, int>());
-            for(int j = 0; j < nShares; j++){
-                fin.skipWhiteSpace();
-                QString peer_key = fin.read(Key::PubKeySize);
-                int vlimit; fin >> vlimit;
-                authorized_peers.back()[peer_key] = vlimit;
-            }
-        }
-        file.close();
-    }
-    else{
-        qDebug() << "Unable to read my images.";
-        return false;
-    }
-
     QDir application_directory(PeerProgram::ApplicationRoot);
     QFileInfoList folder_info_list = application_directory.entryInfoList();
     QStringList folder_name_list = application_directory.entryList();
-
     for(int i=0; i<folder_info_list.size(); i++){
         if(!folder_info_list[i].isDir() || folder_name_list[i] == "." || folder_name_list[i] == ".." || folder_name_list[i] == "__me__" || folder_name_list[i] == ".temp") continue; // Not a directory, me, or temp.
 
@@ -114,7 +88,35 @@ bool PeerProgram::login(bool offline_mode){
         file.close();
     }
 
-    //PU.start();
+    file.setFileName(owner_images_path);
+    if(file.open(QIODevice::ReadOnly)){ // Successful open file.
+        QTextStream fin(&file);
+        int nImg; fin >> nImg;
+        for(int i = 0; i < nImg; i++){
+            int imgID; fin >> imgID;
+            QString imgName; fin >> imgName;
+            int nShares; fin >> nShares;
+            own_images.push_back(Image(imgID, my_public_key, PeerProgram::MeFolderPath + QString::number(imgID) + ".png", imgName, 0, -1));
+            own_img_key_to_index.insert(imgID, own_images.size() - 1);
+            authorized_peers.push_back(QMap<QString, int>());
+            for(int j = 0; j < nShares; j++){
+                fin.skipWhiteSpace();
+                QString peer_key = fin.read(Key::PubKeySize);
+                int vlimit; fin >> vlimit;
+                authorized_peers.back()[peer_key] = vlimit;
+            }
+        }
+        file.close();
+    }
+    else{
+        qDebug() << "Unable to read my images.";
+        return false;
+    }
+
+
+    Server.setCallbackFunc(P2P_SEND_IMAGE, HandelNewImage);
+    PU.start();
+    ST.start();
     qDebug() << "Sign in successful.";
     return true;
 }
@@ -187,12 +189,9 @@ void PeerProgram::signOut(){
     }
     else throw("Unable to write user images file.");
     //update every peer
-    for(int i=0;i<peer_list.size();i++) if(peer_list[i].image_list.size()==0){
-        QDir peerDir(ApplicationRoot+peer_list[i].name+"/");
-        if(peerDir.exists() && peerDir.removeRecursively()) throw ("Unable to delete Peer Director");
-    }
-    else{
-        if(!QDir(ApplicationRoot+peer_list[i].name+"/").exists()) throw("Unexpected error while updating peer");
+    for(int i=0;i<peer_list.size();i++){
+        if(!QDir(ApplicationRoot+peer_list[i].name+"/").exists())
+            QDir(ApplicationRoot+peer_list[i].name+"/").mkpath(".");
         file.setFileName(ApplicationRoot+peer_list[i].name+"/info");
         if(!file.open(QIODevice::WriteOnly)) throw("Unable to open file.");
         QTextStream fout(&file);
@@ -312,6 +311,15 @@ int PeerProgram::getNewImageID(){
     return next_image_ID++;
 }
 void PeerProgram::AddAuthentication(int imgID, QString key, int vLimit){
+    if(!Client.connect(ServerMessage(P2P_SEND_IMAGE), 1000)){
+        qDebug() << "Unable to connect to peer worker.";
+        return;
+    }
+    if(!Client.sendObject(&own_images[own_img_key_to_index[imgID]])){
+        qDebug() << "Unable to send picture.";
+        return;
+    }
+    Client.disconnect();
     QMap<QString, int> &mp = authorized_peers[own_img_key_to_index[imgID]];
     if(mp.count(key) == 0) mp.insert(key, vLimit);
     else mp[key] = vLimit;
@@ -333,3 +341,12 @@ QVector< QMap<QString, int> > PeerProgram::authorized_peers; // Vector indexed b
 
 QMap<int, int> PeerProgram::own_img_key_to_index;
 QMap<QString, int> PeerProgram::peer_key_to_index;
+
+void PeerProgram::HandelNewImage(WorkerView& Worker, const ServerMessage& initMsg){
+    Image img;
+    if(!Worker.recieveObject(&img)){
+        qDebug() << "Unable to recieve message.";
+        return;
+    }
+    img.setPath(ApplicationRoot + peer_list[peer_key_to_index[img.owner_key.getAsString()]].name + "/" + QString::number(img.ID) + ".png");
+}

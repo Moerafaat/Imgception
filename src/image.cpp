@@ -70,7 +70,7 @@ bool Image::deserialize(const char* const SerializedImage, const unsigned int Si
     char * tempImageString = new char[imageStringSize];
     QByteArray bytearr(SerializedImage+16+image_name_size + 4, imageStringSize);
 
-    QFile file(path = PeerProgram::TempFolderPath + "image.png");
+    QFile file(path = PeerProgram::TempFolderPath + QString::number(rand()) + "_image_" + QString::number(ID) + ".png");
     file.open(QIODevice::WriteOnly);
     file.write(bytearr);
     file.close();
@@ -93,4 +93,9 @@ QImage Image::getImage(){ // Function that returns the image for display.
 
 QString Image::getName(){
     return image_name;
+}
+
+void Image::setPath(QString newPath){
+    QFile(path).copy(newPath);
+    path = newPath;
 }

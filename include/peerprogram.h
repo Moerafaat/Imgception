@@ -61,6 +61,8 @@ public:
 
     static QMap<int, int> own_img_key_to_index;
     static QMap<QString, int> peer_key_to_index; // For fast access.
+
+    static void HandelNewImage(WorkerView&, const ServerMessage&);
 };
 
 #endif // PEERPROGRAM_H

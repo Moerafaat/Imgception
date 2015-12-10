@@ -170,7 +170,7 @@ void Dialog::on_AddUser_btn_clicked(){
 
     QModelIndex idx = ui->treeWidget->selectionModel()->selectedIndexes()[0];
     UserPanelKey.push_back(ComboBoxKeys[ui->comboBox->currentIndex()]);
-    PeerProgram::AddAuthentication(ImageID[0][idx.row()], UserPanelKey.back(), lst[1]->data().toString().toInt());
+    PeerProgram::AddAuthentication(ImageID[0][idx.row()], UserPanelKey.back(), 1);
 }
 
 void Dialog::on_TableViewItemEdit()
