@@ -18,8 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPalette *palette = new QPalette();
     palette->setColor(QPalette::Text,QColor::fromRgb(144,170,255,255));
     ui->Username->setPalette(*palette);
-    QString y="_*[A-Z]*_*[a-z]*_*";
-    //ui->Username->setValidator(new QRegExpValidator(y));
+    ui->Username->setValidator(new QRegExpValidator(QRegExp("(?:[a-z]|[A-Z]|_)*"),this));
 }
 
 MainWindow::~MainWindow(){

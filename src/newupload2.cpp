@@ -10,6 +10,7 @@ NewUpload2::NewUpload2(QWidget *parent) :
 {
     ui->setupUi(this);
     stgna= new Steganifier("/home/yehia/Git-Hub/Imgception-GUI-integration/","Steganify");
+    ui->NewImageName_lineEdit->setValidator(new QRegExpValidator(QRegExp("(?:[a-z]|[A-Z]|_)*"),this));
 }
 
 NewUpload2::~NewUpload2()
