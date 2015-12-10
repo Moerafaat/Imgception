@@ -213,7 +213,10 @@ bool PeerProgram::updatePeers(){
         return false;
     }
     ServerMessage msg(P2S_UPDATE_PEER_LIST);
-    msg.setPayload(my_public_key.getAsString().toStdString().c_str(), my_public_key.getAsString().size());
+    char buf[Key::PubKeySize + my_name.size()];
+    memcpy(buf, my_public_key.getAsString().toStdString().c_str(), Key::PubKeySize);
+    memcpy(buf + Key::PubKeySize, my_name.toStdString().c_str(), my_name.size());
+    msg.setPayload(buf, Key::PubKeySize + my_name.size());
     if(!Client.connect(msg, 1000)){
         qDebug() << "Unable to connect to worker.";
         return false;
@@ -227,7 +230,7 @@ bool PeerProgram::updatePeers(){
 
     qDebug() << online.getPeerCount();
     for(int i = 0; i < online.getPeerCount(); i++)
-        qDebug() << online.getPeerKey(i).getAsString();
+        qDebug() << online.getPeerName(i);
     //Actually update
     //Don't forget to create Peer folder if needed
 

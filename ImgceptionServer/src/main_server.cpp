@@ -29,19 +29,19 @@ void refreshOnlineList(){
     timestamp = new_timestamp;
 }
 
-void updateTimeStamp(QString key, const unsigned int IP, const unsigned short Port){
+void updateTimeStamp(QString key, QString name, const unsigned int IP, const unsigned short Port){
     if(key_to_index.count(key) == 0){ // New entry.
         key_to_index[key] = online_list.getPeerCount();
-        online_list.pushPeer(key, "Name1", IP, Port);
+        online_list.pushPeer(key, name, IP, Port);
     }
     timestamp.push_back(QDateTime::currentDateTime());
 }
 
 void retPeerList(WorkerView& Worker, const ServerMessage& initMsg){
     QString key = QString::fromStdString(string(initMsg.getPayload(), initMsg.getPayloadSize()));
-
+    QString name = QString::fromStdString(string(initMsg.getPayload() + Key::PubKeySize, initMsg.getPayloadSize() - Key::PubKeySize));
     refreshOnlineList(); // Refresh list upon new request.
-    updateTimeStamp(key, Worker.getPeerIP(), Worker.getPeerPort()); // Update timestamp (add peer if it doesn;t exist).
+    updateTimeStamp(key, name, Worker.getPeerIP(), Worker.getPeerPort()); // Update timestamp (add peer if it doesn;t exist).
     Worker.sendObject(&online_list); // Send list.
 }
 
