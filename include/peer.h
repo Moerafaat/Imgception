@@ -10,7 +10,8 @@
 
 class Peer{
 public:
-    Peer(QString, QString, bool, unsigned int=-1, unsigned short=-1);
+    Peer() = default;
+    Peer(Key, QString, bool, unsigned int=-1, unsigned short=-1);
     Image getImageByIndex(unsigned int);
 private:
     Key key; // Peer identifier.
@@ -19,7 +20,7 @@ private:
     unsigned int IP; // Peer IP.
     unsigned short port; // Peer port.
 
-    QVector<Image> images; // Images belonging to this peer that the current user has seen at some point in time (On startup + Server update).
+    QVector<Image> image_list; // Images belonging to this peer that the current user has seen at some point in time (On startup + Server update).
     QVector<int> image_views; // Number of views per image.
 
     QMap<int, int> image_key_to_index; // For fast access.
