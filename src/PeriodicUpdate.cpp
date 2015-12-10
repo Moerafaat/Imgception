@@ -12,6 +12,7 @@ void PeriodicUpdate::Exit(){
 }
 
 void PeriodicUpdate::run(){
+    QThread::sleep(5);
     while(!EXIT_FLAG){
         QThread::setTerminationEnabled(false);
         if(mutex.tryLock()){

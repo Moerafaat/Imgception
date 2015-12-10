@@ -3,6 +3,7 @@
 #include "peerprogram.h"
 
 void ServerThread::run(){
+    QThread::sleep(5);
     unsigned int IP;
     unsigned short Port;
     while(!PeerProgram::Server.exitStatus()){
