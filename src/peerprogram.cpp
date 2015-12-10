@@ -225,6 +225,9 @@ bool PeerProgram::updatePeers(){
         return false;
     }
 
+    qDebug() << online.getPeerCount();
+    for(int i = 0; i < online.getPeerCount(); i++)
+        qDebug() << online.getPeerKey(i).getAsString();
     //Actually update
     //Don't forget to create Peer folder if needed
 

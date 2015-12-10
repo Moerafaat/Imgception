@@ -20,7 +20,7 @@ void refreshOnlineList(){
             // Update online list, index map, and timestamp vector.
             new_key_to_index.insert(online_list.getPeerKey(i).getAsString(), new_online_list.getPeerCount());
             new_timestamp.push_back(timestamp[i]);
-            new_online_list.pushPeer(online_list.getPeerKey(i).getAsString(), online_list.getPeerIP(i), online_list.getPeerPort(i));
+            new_online_list.pushPeer(online_list.getPeerKey(i).getAsString(), online_list.getPeerName(i), online_list.getPeerIP(i), online_list.getPeerPort(i));
         }
     }
 
@@ -32,7 +32,7 @@ void refreshOnlineList(){
 void updateTimeStamp(QString key, const unsigned int IP, const unsigned short Port){
     if(key_to_index.count(key) == 0){ // New entry.
         key_to_index[key] = online_list.getPeerCount();
-        online_list.pushPeer(key, IP, Port);
+        online_list.pushPeer(key, "Name1", IP, Port);
     }
     timestamp.push_back(QDateTime::currentDateTime());
 }
