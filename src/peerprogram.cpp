@@ -109,7 +109,7 @@ bool PeerProgram::login(bool offline_mode){
 // Local invocation.
 bool PeerProgram::signUp(QString Username){
 
-    QString info_path = MeFolderPath + "info.txt";
+        QString info_path = MeFolderPath + "info.txt";
     QFileInfo check_file(info_path);
     if(check_file.exists()){ // Already signed up.
         qDebug() << "You already signed up.";

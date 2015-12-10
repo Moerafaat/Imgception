@@ -19,6 +19,17 @@
 #include "update.h"
 #include "key.h"
 #include "Views.h"
+#include<QVector>
+#include<QPair>
+#include<QString>
+
+struct UserPanelEntry
+{
+    QString PublicKey;
+    QString name;
+    int ViewCount;
+};
+
 
 namespace Ui {
 class Dialog;
@@ -49,6 +60,16 @@ private:
     NewUpload2  *NewUploadWindow2;
     QStandardItemModel *model;
 
+    //--------------------------------------------------
+
+    QVector<QString> getSharedPeerList(); // return names of people shared with me images
+    QVector<Image> getPeerImages(QString peername ); // return all images sent before from a certain peer.
+    QVector<Image> getMyImages(); // return all images of ME.
+    QVector<QPair<QString ,QString >> getOnlinePeers(); //QVector<QPair<Publickey,onlinePeerName>>
+    QVector<UserPanelEntry> UserPanelInfo();//QVector<UserPanelEntry>
+    //void AddUser(QString, int,int); // void AddUser(Publickey,count,image ID);
+    //void DeleteUser(QString, int,int); // void DeleteUser(Publickey,count,image ID);
+    void UpdateUsersFromPanel(const QVector<QPair<QString, int>>&, const int&); // void UpdateUsers(Publickey,count,image ID);
     int count =10;// dumy counter
 };
 

@@ -81,6 +81,7 @@ bool Image::deserialize(const char* const SerializedImage, const unsigned int Si
 
 // Stub entry.
 QImage Image::getImage(){ // Function that returns the image for display.
+    qDebug() << path;
     return QImage(path);    //Don't forget to remove
     if(up_count < view_limit)
     {
