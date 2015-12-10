@@ -25,6 +25,7 @@ public:
     static const QString MeFolderPath;
     static const QString TempFolderPath;
     static const QString UpdateCache;
+
     static void InitFolders();
 
     static bool login(bool); // Stub entry.
@@ -32,7 +33,12 @@ public:
     static void signOut();
     static bool updatePeers(); // Stub entry.
 
-    static QStringList GetPeerNames(); // Local invocation.
+    static QVector<QString> getAllKeys();
+    static QVector<QString> getPeerKeys();
+    static QString getNameByKey(QString);
+    static QVector<QString> getVectorNameByKey(QVector<QString>);
+    static QVector<int> getAllImageIDByOwner(QString);
+    static Image getImgByID(QString, int);
 
     static ServerView Server;
     static ClientView Client;
@@ -48,6 +54,7 @@ public:
     static QVector<Peer> peer_list; // All peers (online or offline with previous interaction history.
     static QVector< QMap<QString, int> > authorized_peers; // Vector indexed by image to map of authorized peers and view limit.
 
+    static QMap<int, int> own_img_key_to_index;
     static QMap<QString, int> peer_key_to_index; // For fast access.
 };
 

@@ -36,6 +36,7 @@ void MainWindow::on_SignUP_btn_clicked(){
 
 void MainWindow::on_login_btn_clicked(){
     if(PeerProgram::login(true)){
+        secDialog.UpdateGUI();
         PeerProgram::PU.start();
         secDialog.setModal(true);
         this->close();

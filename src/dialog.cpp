@@ -32,17 +32,6 @@ Dialog::Dialog(QWidget *parent) :
     ui->DeleteUser_btn->setVisible(false);
     ui->comboBox->setVisible(false);
     ui->Edit_btn->setEnabled(false);
-
-
-    //Seeting Up the Tree
-
-
-    AddRoot("Me");
-    QVector<QString>TreeMembers=getSharedPeerList();
-    for(int i=0;i<TreeMembers.size();i++)
-            AddRoot(TreeMembers[i]);
-
-
 }
 
 Dialog::~Dialog(){
@@ -55,31 +44,31 @@ Dialog::~Dialog(){
     delete ui;
 }
 
-void Dialog::AddRoot(QString name){
-    QTreeWidgetItem *itm = new QTreeWidgetItem(ui->treeWidget);
-    itm->setText(0,name);
-    ui->treeWidget->addTopLevelItem(itm);
-
-
-    if(name!="Me")
-       {
-            QVector<Image>peerImages= getPeerImages(name);
-            for(int i=0;i<peerImages.size();i++)
-                 AddChild(itm,peerImages[i].image_name);
-       }
-    else
-       {
-         QVector<Image>MyImages=getMyImages();
-         for(int i=0;i<MyImages.size();i++)
-                          AddChild(itm,MyImages[i].image_name);
-
-       }
-
+void Dialog::UpdateGUI(){
+    UpdateTree();
 }
 
-void Dialog::AddChild(QTreeWidgetItem *parent,QString name){
-    QTreeWidgetItem *itm = new QTreeWidgetItem ();
-    itm->setText(0,name);
+void Dialog::UpdateTree(){
+    ui->treeWidget->clear();
+    TreeKey = PeerProgram::getAllKeys();
+    ImageID.resize(TreeKey.size());
+    for(int i = 0; i < TreeKey.size(); i++)
+        AddRoot(i, TreeKey[i]);
+}
+
+void Dialog::AddRoot(int idx, QString ownerKey){
+    QTreeWidgetItem *parent = new QTreeWidgetItem(ui->treeWidget);
+    parent->setText(0, PeerProgram::getNameByKey(ownerKey));
+    ui->treeWidget->addTopLevelItem(parent);
+
+    ImageID[idx] = PeerProgram::getAllImageIDByOwner(ownerKey);
+    for(int i=0;i<ImageID[idx].size();i++)
+        AddChild(parent, ownerKey, ImageID[idx][i]);
+}
+
+void Dialog::AddChild(QTreeWidgetItem *parent, QString ownerKey, int imgID){
+    QTreeWidgetItem *itm = new QTreeWidgetItem();
+    itm->setText(0, PeerProgram::getImgByID(ownerKey, imgID).getName());
     parent->addChild(itm);
 }
 
@@ -97,18 +86,7 @@ void Dialog::on_treeWidget_doubleClicked(const QModelIndex &index){
         ui->comboBox->setVisible(false);
     }
 
-    if(index.parent().row() != -1){
-        QPixmap pix;
-        //PeerProgram::Peers[Parent.row][row].getImage().   *************************************
-        bool loaded = pix.load(":/APPImages/Images/"+index.data().toString());
-        if(loaded == false)
-            QMessageBox::critical(this, "Loading Failed","Unable to load image");
-        else{
-            pix = pix.scaled(ui->ImageViewer_label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            ui->ImageViewer_label->setPixmap(pix);
-            ui->CounterViewer_label->setText("Image view count: " + QString::number(count));    //Count Getter
-        }
-    }
+    if(index.parent().row() != -1) ui->ImageViewer_label->setPixmap(QPixmap::fromImage(PeerProgram::getImgByID(TreeKey[index.parent().row()], ImageID[index.parent().row()][index.row()]).getImage()).scaled(ui->ImageViewer_label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
 void Dialog::on_New_btn_clicked(){
@@ -118,14 +96,12 @@ void Dialog::on_New_btn_clicked(){
         delete NewUploadWindow2;
 }
 
-void Dialog::on_Edit_btn_clicked()
-{
-
+void Dialog::on_Edit_btn_clicked(){
     //Setting Up GUI
     ui->comboBox->clear();
 
-    //does this has the online peer list ?
-    ui->comboBox->addItems(PeerProgram::GetPeerNames());
+    ComboBoxKeys = PeerProgram::getPeerKeys();
+    ui->comboBox->addItems(QList<QString>::fromVector(PeerProgram::getVectorNameByKey(ComboBoxKeys)));
     model->clear();
 
     //Populate Model
@@ -317,7 +293,3 @@ void Dialog::UpdateUsersFromPanel(const QVector<QPair<QString, int>> &PeerInfo,c
             qDebug()<<PeerInfo[i].second;
        }
 }
-
-
-
-

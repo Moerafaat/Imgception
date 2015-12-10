@@ -38,12 +38,20 @@ class Dialog;
 class Dialog : public QDialog{
     Q_OBJECT
 
-    void AddRoot(QString name );
-    void AddChild(QTreeWidgetItem *parent,QString name);
+    void AddRoot(int, QString);
+    void AddChild(QTreeWidgetItem *, QString, int);
+
+    QVector<QString> TreeKey;
+    QVector<QVector<int> > ImageID;
+    QVector<QString> ComboBoxKeys;
+
+    void UpdateTree();
 
 public:
     explicit Dialog(QWidget *parent = 0);
     ~Dialog();
+
+    void UpdateGUI();
 
 private slots:
     void on_treeWidget_doubleClicked(const QModelIndex &index);

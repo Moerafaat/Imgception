@@ -24,6 +24,7 @@ public:
     bool deserialize(const char * const, const unsigned int);
 
     QImage getImage(); // Local invocation. Return image for Display (Open the file and Decode Steganography).
+    QString getName();
 
     static Steganifier s;
 

@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1392</width>
-    <height>920</height>
+    <width>1300</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Imgception</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="myApp.qrc">
     <normaloff>:/APPICONS/icons/hd-icon.png</normaloff>:/APPICONS/icons/hd-icon.png</iconset>
   </property>
   <property name="styleSheet">
@@ -25,9 +25,9 @@ background-color: rgb(64, 105, 159);</string>
    <property name="geometry">
     <rect>
      <x>280</x>
-     <y>170</y>
-     <width>1081</width>
-     <height>741</height>
+     <y>160</y>
+     <width>1010</width>
+     <height>521</height>
     </rect>
    </property>
    <property name="palette">
@@ -139,8 +139,8 @@ background-color: rgb(64, 105, 159);</string>
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>541</width>
-     <height>101</height>
+     <width>471</width>
+     <height>81</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -190,9 +190,9 @@ background-color: rgb(64, 105, 159);</string>
    <property name="geometry">
     <rect>
      <x>9</x>
-     <y>120</y>
+     <y>100</y>
      <width>251</width>
-     <height>411</height>
+     <height>261</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -213,7 +213,7 @@ background-color: rgb(64, 105, 159);</string>
         </color>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="myApp.qrc">
          <normaloff>:/APPICONS/icons/world_wide_globe_online_business_web-128.png</normaloff>:/APPICONS/icons/world_wide_globe_online_business_web-128.png</iconset>
        </property>
       </column>
@@ -238,9 +238,9 @@ background-color: rgb(64, 105, 159);</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>540</y>
+     <y>370</y>
      <width>251</width>
-     <height>371</height>
+     <height>321</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -305,6 +305,8 @@ background-color: rgb(64, 105, 159);</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="myApp.qrc"/>
+ </resources>
  <connections/>
 </ui>

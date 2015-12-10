@@ -90,3 +90,7 @@ QImage Image::getImage(){ // Function that returns the image for display.
     }
     else return QImage(path);
 }
+
+QString Image::getName(){
+    return image_name;
+}
