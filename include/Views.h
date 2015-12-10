@@ -100,7 +100,8 @@ private:
 	unsigned int server_ip;
 	unsigned short server_port;
 public:
-	ClientView(const char *, short);
+    ClientView(const char *, unsigned short);
+    ClientView(unsigned int, unsigned short);
 	~ClientView() = default;
 
 	bool connect(const ServerMessage&, const int = -1); //0 timeout = don't wait for worker

@@ -375,10 +375,15 @@ unsigned short WorkerView::getPeerPort() const{
 }
 
 //ClientView
-ClientView::ClientView(const char *hostname, short peer_port): client_socket(UDPsocket::resolveHostName(hostname), peer_port){
+ClientView::ClientView(const char *hostname, const unsigned short peer_port): client_socket(UDPsocket::resolveHostName(hostname), peer_port){
 	//Resovles the host first, then constructs the client socket.
 	server_ip = client_socket.getPeerIP();
 	server_port = peer_port;
+}
+ClientView::ClientView(const unsigned int ip, const unsigned short peer_port): client_socket(ip, peer_port){
+    //Resovles the host first, then constructs the client socket.
+    server_ip = ip;
+    server_port = peer_port;
 }
 
 bool ClientView::connect(const ServerMessage& msg, const int timeout){

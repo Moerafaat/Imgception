@@ -315,15 +315,16 @@ int PeerProgram::getNewImageID(){
     return next_image_ID++;
 }
 void PeerProgram::AddAuthentication(int imgID, QString key, int vLimit){
-    if(!Client.connect(ServerMessage(P2P_SEND_IMAGE), 1000)){
+    ClientView tClient(peer_list[peer_key_to_index[key]].IP, 4000);
+    if(!tClient.connect(ServerMessage(P2P_SEND_IMAGE), 1000)){
         qDebug() << "Unable to connect to peer worker.";
         return;
     }
-    if(!Client.sendObject(&own_images[own_img_key_to_index[imgID]])){
+    if(!tClient.sendObject(&own_images[own_img_key_to_index[imgID]])){
         qDebug() << "Unable to send picture.";
         return;
     }
-    Client.disconnect();
+    tClient.disconnect();
     QMap<QString, int> &mp = authorized_peers[own_img_key_to_index[imgID]];
     if(mp.count(key) == 0) mp.insert(key, vLimit);
     else mp[key] = vLimit;

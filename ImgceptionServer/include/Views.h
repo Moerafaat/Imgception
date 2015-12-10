@@ -40,27 +40,27 @@ public:
 };
 
 class ServerView{
-	ServerView() = delete;
-	ServerView(const ServerView&) = delete;
-	ServerView(ServerView&&) = delete;
+    ServerView() = delete;
+    ServerView(const ServerView&) = delete;
+    ServerView(ServerView&&) = delete;
     friend class WorkerView;
 private:
-	static const int MAX_WORKERS = 10;
+    static const int MAX_WORKERS = 10;
     bool EXIT_FLAG;
-	UDPsocket server_socket;
-	WorkerView *workers[MAX_WORKERS];
-	std::vector<WorkerView *> freeWorkers;
-	pthread_mutex_t workersLockMutex;
+    UDPsocket server_socket;
+    WorkerView *workers[MAX_WORKERS];
+    std::vector<WorkerView *> freeWorkers;
+    pthread_mutex_t workersLockMutex;
     void (*callbackFunc[256])(WorkerView&, const ServerMessage&);
 public:
-	ServerView(unsigned short);
-	~ServerView();
+    ServerView(unsigned short);
+    ~ServerView();
 
     void setCallbackFunc(const unsigned char, void(*)(WorkerView&, const ServerMessage&));
-	ServerMessage listen(unsigned int&, unsigned short&);
+    ServerMessage listen(unsigned int&, unsigned short&);
     void deployWorker(const unsigned int, const unsigned short, const ServerMessage&);
     void cleanExit();   //Should be called from the same thread as listening. Until a future solution if found
-	bool exitStatus() const;
+    bool exitStatus() const;
     bool isWorkerFree() const;
 private:
     WorkerView *lockWorker();
@@ -68,22 +68,22 @@ private:
 };
 
 class WorkerView{
-	WorkerView() = delete;
-	WorkerView(const WorkerView&) = delete;
-	WorkerView(WorkerView&&) = delete;
+    WorkerView() = delete;
+    WorkerView(const WorkerView&) = delete;
+    WorkerView(WorkerView&&) = delete;
 private:
-	static void *process (void *); // Process to be spawned in a thread.
+    static void *process (void *); // Process to be spawned in a thread.
 private:
     UDPsocket worker_socket;
-	pthread_t thread_id;
-	pthread_mutex_t available;
-	ServerMessage initMsg;
-	ServerView *Server;
+    pthread_t thread_id;
+    pthread_mutex_t available;
+    ServerMessage initMsg;
+    ServerView *Server;
 public:
-	WorkerView(ServerView *);
-	~WorkerView();
+    WorkerView(ServerView *);
+    ~WorkerView();
 
-	void deploy(const unsigned int, const unsigned short, const ServerMessage&); //API to deploy thread with IP:Port
+    void deploy(const unsigned int, const unsigned short, const ServerMessage&); //API to deploy thread with IP:Port
     bool sendObject(const Transmittable * const, const unsigned int = 5);
     bool recieveObject(Transmittable * const, const unsigned int = 5);
 
@@ -92,19 +92,20 @@ public:
 };
 
 class ClientView{
-	ClientView() = delete;
-	ClientView(const ClientView&) = delete;
-	ClientView(ClientView&&) = delete;
+    ClientView() = delete;
+    ClientView(const ClientView&) = delete;
+    ClientView(ClientView&&) = delete;
 private:
-	UDPsocket client_socket;
-	unsigned int server_ip;
-	unsigned short server_port;
+    UDPsocket client_socket;
+    unsigned int server_ip;
+    unsigned short server_port;
 public:
-	ClientView(const char *, short);
-	~ClientView() = default;
+    ClientView(const char *, unsigned short);
+    ClientView(unsigned int, unsigned short);
+    ~ClientView() = default;
 
-	bool connect(const ServerMessage&, const int = -1); //0 timeout = don't wait for worker
-	void disconnect();
+    bool connect(const ServerMessage&, const int = -1); //0 timeout = don't wait for worker
+    void disconnect();
     bool sendObject(const Transmittable * const, const unsigned int = 5);
     bool recieveObject(Transmittable * const, const unsigned int = 5);
  };
