@@ -58,6 +58,31 @@ bool PeerProgram::login(bool offline_mode){
         return false;
     }
 
+    file.setFileName(owner_images_path);
+    if(file.open(QIODevice::ReadOnly)){ // Successful open file.
+        QTextStream fin(&file);
+        int nImg; fin >> nImg;
+        for(int i = 0; i < nImg; i++){
+            int imgID; fin >> imgID;
+            QString imgName; fin >> imgName;
+            int nShares; fin >> nShares;
+            own_images.push_back(Image(imgID, my_public_key, PeerProgram::MeFolderPath + QString::number(imgID) + ".png", imgName, 0, -1));
+            own_img_key_to_index.insert(imgID, own_images.size() - 1);
+            authorized_peers.push_back(QMap<QString, int>());
+            for(int j = 0; j < nShares; j++){
+                fin.skipWhiteSpace();
+                QString peer_key = fin.read(Key::PubKeySize);
+                int vlimit; fin >> vlimit;
+                authorized_peers.back()[peer_key] = vlimit;
+            }
+        }
+        file.close();
+    }
+    else{
+        qDebug() << "Unable to read my images.";
+        return false;
+    }
+
     QDir application_directory(PeerProgram::ApplicationRoot);
     QFileInfoList folder_info_list = application_directory.entryInfoList();
     QStringList folder_name_list = application_directory.entryList();
@@ -87,32 +112,6 @@ bool PeerProgram::login(bool offline_mode){
         }
         file.close();
     }
-
-    file.setFileName(owner_images_path);
-    if(file.open(QIODevice::ReadOnly)){ // Successful open file.
-        QTextStream fin(&file);
-        int nImg; fin >> nImg;
-        for(int i = 0; i < nImg; i++){
-            int imgID; fin >> imgID;
-            QString imgName; fin >> imgName;
-            int nShares; fin >> nShares;
-            own_images.push_back(Image(imgID, my_public_key, PeerProgram::MeFolderPath + QString::number(imgID) + ".png", imgName, 0, -1));
-            own_img_key_to_index.insert(imgID, own_images.size() - 1);
-            authorized_peers.push_back(QMap<QString, int>());
-            for(int j = 0; j < nShares; j++){
-                fin.skipWhiteSpace();
-                QString peer_key = fin.read(Key::PubKeySize);
-                int vlimit; fin >> vlimit;
-                authorized_peers.back()[peer_key] = vlimit;
-            }
-        }
-        file.close();
-    }
-    else{
-        qDebug() << "Unable to read my images.";
-        return false;
-    }
-
 
     Server.setCallbackFunc(P2P_SEND_IMAGE, HandelNewImage);
     PU.start();
