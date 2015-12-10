@@ -228,9 +228,20 @@ bool PeerProgram::updatePeers(){
         return false;
     }
 
-    qDebug() << online.getPeerCount();
-    for(int i = 0; i < online.getPeerCount(); i++)
-        qDebug() << online.getPeerName(i);
+    for(int i = 0; i < online.getPeerCount(); i++){
+        if(online.getPeerKey(i).getAsString() == my_public_key.getAsString()) continue;
+        if(peer_key_to_index.count(online.getPeerKey(i).getAsString()) == 0){
+            peer_list.push_back(Peer(online.getPeerKey(i), online.getPeerName(i), true, online.getPeerIP(i), online.getPeerPort(i)));
+            peer_key_to_index.insert(peer_list.back().key.getAsString(), peer_list.size() - 1);
+        }
+        else{
+            Peer& pr = peer_list[peer_key_to_index[online.getPeerKey(i).getAsString()]];
+            pr.online = true;
+            pr.IP = online.getPeerIP(i);
+            pr.port = online.getPeerPort(i);
+            pr.name = online.getPeerName(i);
+        }
+    }
     //Actually update
     //Don't forget to create Peer folder if needed
 

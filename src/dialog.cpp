@@ -143,7 +143,8 @@ void Dialog::on_DeleteUser_btn_clicked(){
 }
 
 void Dialog::on_Refresh_btn_clicked(){
-    PeerProgram::updatePeers();
+    //PeerProgram::updatePeers();
+    UpdateGUI();
     //GetNotifications  ***************************************************************
     //Update GUI
 }

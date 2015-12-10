@@ -40,7 +40,7 @@ void updateTimeStamp(QString key, QString name, const unsigned int IP, const uns
 void retPeerList(WorkerView& Worker, const ServerMessage& initMsg){
     QString key = QString::fromStdString(string(initMsg.getPayload(), initMsg.getPayloadSize()));
     QString name = QString::fromStdString(string(initMsg.getPayload() + Key::PubKeySize, initMsg.getPayloadSize() - Key::PubKeySize));
-    refreshOnlineList(); // Refresh list upon new request.
+    //refreshOnlineList(); // Refresh list upon new request.
     updateTimeStamp(key, name, Worker.getPeerIP(), Worker.getPeerPort()); // Update timestamp (add peer if it doesn;t exist).
     Worker.sendObject(&online_list); // Send list.
 }
