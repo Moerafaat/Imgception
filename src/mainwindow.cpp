@@ -7,6 +7,7 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QRegExpValidator>
 #include "key.h"
 #include "peerprogram.h"
 #include "onlinepeers.h"
@@ -17,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPalette *palette = new QPalette();
     palette->setColor(QPalette::Text,QColor::fromRgb(144,170,255,255));
     ui->Username->setPalette(*palette);
+    ui->Username->setValidator(new QRegExpValidator(QRegExp("(?:[a-z]|[A-Z]|_)*"),this));
 }
 
 MainWindow::~MainWindow(){
@@ -24,8 +26,12 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::on_SignUP_btn_clicked(){
-    if(!PeerProgram::signUp(ui->Username->text()))
-       QMessageBox::critical(this, "Unable to sign up","Unable to sign up.");
+    if(ui->Username->text()=="")
+        QMessageBox::critical(this, "Invalid Username","Please Enter a Username.");
+    else if(!PeerProgram::signUp(ui->Username->text()))
+        QMessageBox::critical(this, "Unable to sign up","Unable to sign up.");
+    else
+        QMessageBox::critical(this, "Signup sucessful", "YAAAY! Welcome to imgception!!");
 }
 
 void MainWindow::on_login_btn_clicked(){
